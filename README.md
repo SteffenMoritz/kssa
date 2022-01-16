@@ -14,7 +14,8 @@ The goal of kssa is to ...
 You can install the development version of kssa like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+library(devtools)
+install_github("SteffenMoritz/kssa")
 ```
 
 ## Example
