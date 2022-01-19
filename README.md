@@ -22,6 +22,8 @@ install_github("SteffenMoritz/kssa")
 
 This is a basic example which shows you how to solve a common problem:
 
+TEST TEST TEST FELIPE
+
 ``` r
 library(kssa)
 ## basic example code
