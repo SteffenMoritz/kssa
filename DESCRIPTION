@@ -1,5 +1,5 @@
 Package: kssa
-Title: What the Package Does (One Line, Title Case)
+Title: Validates the performance of imputation methods for univariate time series
 Version: 0.0.1
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
