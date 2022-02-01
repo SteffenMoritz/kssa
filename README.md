@@ -22,8 +22,11 @@ install_github("SteffenMoritz/kssa")
 
 This is a basic example which shows you how to solve a common problem:
 
+TEST TEST TEST FELIPE
+TEST TEST TEST FELIPE2
+
 ``` r
 library(kssa)
 ## basic example code
 ```
-
+git config --global user.email "you@example.com"
