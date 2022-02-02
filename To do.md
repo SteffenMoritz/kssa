@@ -15,5 +15,7 @@
 
 #metric = metric chosen to evaluate the results (rmse, mase, smape etc)
 
+#maximum Missing Data Siz: User controls the maximum MD size for each segment
+
 #############################
 #Homework - search for elegant functions that allow us to split time series and put simulation windows inside the segments
