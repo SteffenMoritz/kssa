@@ -1,40 +1,28 @@
-#' @title Add two numbers
+#' @title kssa Algorithm
 #'
 #' @description Function to add two numbers
 #' @param x A number
 #' @param y A number
+#'
 #' @return The sum of \code{x} and \code{y}
 #'
 #' @import imputeTS
-#' @import imputeFIN
+#' @import imputeFin
+#' @import sjmisc
+#' @import Metrics
+#' @import dplyr
+#' @import snpar
+#'
 #' @export
-kssa <- function(x_ts, y) {
 
+kssa <- function(x_ts, start.method, segments = 6, iterations, metric) {
 
-
+  # #' @import forecast
 
 ## Long code KSSA
 
-library(sjmisc)
-library(imputeTS)
-library(Metrics)
-library(dplyr)
-library(snpar)
-library(BaylorEdPsych)
-library(mvnmle)
-library(forecast)
-
-
 
 ############### 1. IMPUT DATA FOR DIFFERENT SPECIES SEPEC #############
-
-
-
-
-
-
-
-
 
 
 
@@ -50,7 +38,7 @@ x_imput_mal=na_ma(x_ts,k=3,weighting = "linear") #m?todo moving average linear
 x_imput_mae=na_ma(x_ts,k=3,weighting = "exponential") #m?todo moving average exponential
 x_imput_seadec=na_seadec(x_ts,algorithm = "kalman") #m?todo de imputacion kalman en serie estacionalmente descompuesta
 x_imput_locf=na_locf(x_ts,option = "locf",na_remaining = "rev") #metodo de ultima observacion hacia delante
-x_imput_stl=na.interp(x_ts) #metodo de descomposici?n STL con interpolaci?n lineal
+#x_imput_stl=na.interp(x_ts) #metodo de descomposici?n STL con interpolaci?n lineal
 
 
 
@@ -88,7 +76,8 @@ for (i in 1:iterations) {
   y_na <- sjmisc::set_na(x_imput, na=  c(x_imput[sample(gap1,1):sample(gap1,1)],x_imput[sample(gap2,1):sample(gap2,1)],x_imput[sample(gap3,1):sample(gap3,1)],x_imput[sample(gap4,1):sample(gap4,1)],x_imput[sample(gap5,1):sample(gap5,1)],x_imput[sample(gap6,1):sample(gap6,1)],x_imput[sample(gap7,1):sample(gap7,1)],x_imput[sample(gap8,1):sample(gap8,1)]))
 
   # 2. Make imputations on simulated MD
-  y_impute <- na_kalman(y_na,model="StructTS",nit = -1)
+  #y_impute <- na_kalman(y_na,model="StructTS",nit = -1)
+  y_impute <- na_interpolation(y_na)
 
   # 3. Calculate performance metrics
   nas <-sum(is.na(y_na))
