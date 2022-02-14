@@ -19,3 +19,16 @@
 
 #############################
 #Homework - search for elegant functions that allow us to split time series and put simulation windows inside the segments
+
+#####################################################################
+#### First Fetch upstream in the GH web on my rep, and then pull in R
+#####################################################################
+
+#Tasks for netx meeting Feb 15
+# 1. Bryan and Felipe works on the functions to select method, impute simulated missing data
+  # iterate the process and produce final restults
+  
+# 2. Steffen works on a list of possible errors or warnings that users should get
+when using the package
+
+
