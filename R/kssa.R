@@ -12,15 +12,125 @@
 #' @import Metrics
 #' @import dplyr
 #' @import snpar
-#'
+#' @import zoo
 #' @export
 
-kssa <- function(x_ts, start.method = "interpolation", methods = c("auto.arima", "interpolation"), segments = 6, iterations = 30, metric) {
+kssa <- function(x_ts, #Time-series
+                 start.method, # Can select various
+                 methods, # Can select various
+                 segments, #Number of segments to ts be divided
+                 iterations, #Number of replicates
+                 percentmd, #Percentage of new MD in simulations
+                 metric) { #Metrics to evaluate results
 
   # #' @import forecast
 
+  results <- data.frame(
+    "start.method" = as.character(),
+    "actual.method" = as.character(),
+    "rmse" = numeric(),
+    "cor" = numeric(),
+    "mase" = numeric(),
+    "smape"= numeric()
+    )
 
-############### 1. IMPUT DATA FOR DIFFERENT SPECIES SEPEC #############
+  get_mdoriginal <- function(x, y){
+    na_original <- which(is.na(x))
+    weight_index <- rep(1, length(y))
+    weight_index[na_original] <- 0
+    return(weight_index)
+  }
+
+  split_arbitrary <- function(x, percentmd, segments, mdoriginal){
+    size_window_B <- seq(from = round(length(x)/segments),
+                         to = length(x),
+                         by = round(length(x)/segments)+1)
+    size_window_A <- size_window_B + 1
+    size_window_B <- c(size_window_B, length(x))
+    #size_window_A <- c(size_window_A, size_window_B[length(size_window_B)-1]+1)
+    size_window_A <- c(1, size_window_A)
+
+    index_time <- index(x)
+
+    chunks <- c()
+
+    for (i in 1:segments) {
+      chunk <- window(x = x, start = index_time[size_window_A[i]],
+                      end = index_time[size_window_B[i]])
+
+      m_a2 <- sample(x = index(chunk), size = (round(length(chunk)*percentmd)), replace = F,
+                     prob = mdoriginal[size_window_A[i]:size_window_B[i]])
+
+      temp <- index(chunk) %in% m_a2
+
+
+      chunks <- append(chunks, chunk)
+    }
+    return(chunks)
+  }
+
+
+# 1. IMPUT DATA FOR DIFFERENT SPECIES SEPEC ####
+
+  df_of_methods <- data.frame("methods" =c("auto.arima", "StructTS", "linear",
+                                           "spline", "stine", "simple", "malinear",
+                                           "exponential", "kalman", "nalocf", "decomp"),
+                              "formulas" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
+                                             "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
+                                             "na_interpolation(x_ts,option='linear')",
+                                             "na_interpolation(x_ts,option='spline')",
+                                             "na_interpolation(x_ts,option='stine')",
+                                             "na_ma(x_ts,k=3,weighting = 'simple')",
+                                             "na_ma(x_ts,k=3,weighting = 'linear')",
+                                             "na_ma(x_ts,k=3,weighting = 'exponential')",
+                                             "na_seadec(x_ts,algorithm = 'kalman')",
+                                             "na_locf(x_ts,option = 'locf',na_remaining = 'rev')",
+                                             "na.interp(x_ts)")
+                              )
+
+  check <- start.method %in% df_of_methods$methods
+
+  if (all(check) == TRUE){
+    for (i in 1:length(start.method)) {
+      first_imputed <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == start.method[i]]))
+      mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
+      newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
+
+      for (j in 1:length(methods)) {
+        check2 <- methods %in% df_of_methods$methods
+        if (all(check) == TRUE){
+          actual_imputation <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == methods[j]]))#Here it goes good
+          rmse <- rmse(first_imputed,actual_imputation)
+          cor <- cor(as.vector(first_imputed),as.vector(actual_imputation))^2
+          mase <- mase(first_imputed,actual_imputation)
+          smape <- smape(first_imputed,actual_imputation)
+
+          Tempresults <- data.frame("start.method" = start.method[i],
+                                    "actual.method" = methods[j],
+                                    "rmse" = rmse,
+                                    "cor" = cor,
+                                    "mase" = mase,
+                                    "smape"= smape)
+          results <- bind_rows(results, Tempresults)
+
+        }
+        else{
+          print(paste0("The methods '",
+                       paste(as.character(methods[which(!check2)]),
+                             collapse = ", "),
+                       "' in actual.method parameter, are not in the list of available options"))
+        }
+      }
+    }
+  }
+  else {
+    print(paste0("The methods '",
+                 paste(as.character(start.method[which(!check)]),
+                       collapse = ", "),
+                 "' in start.method parameter, are not in the list of available options"))
+  }
+  return(results)
+}
 
 # This is for the starting imputations
 if (start.method == "interpolation") {
@@ -48,8 +158,7 @@ else if (start.method == "auto.arima") {
 
 
 
-################################################################################
-#################### 2. VALIDATION WHEN SIMULATING THE NA'S STRUCTURE OF DATA IN CHUNKSSS ###############
+#2. VALIDATION WHEN SIMULATING THE NA'S STRUCTURE OF DATA IN CHUNKSSS ####
 
 
 #here we need a code line to split the time series and specify where to put simulation windows
@@ -68,7 +177,7 @@ for (i in 1:iterations) {
    y_impute <- na_interpolation(y_na)
 
   # 3. Calculate performance metrics
-  nas <-sum(is.na(y_na))
+  #nas <-sum(is.na(y_na)) #predefined by user so go on
   rmse <- rmse(serie.temporal,y_impute)
   cor <- cor(serie.temporal,y_impute)^2
   mase <- mase(serie.temporal,y_impute)
