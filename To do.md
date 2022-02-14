@@ -31,4 +31,8 @@
 # 2. Steffen works on a list of possible errors or warnings that users should get
 when using the package
 
+#Task for next meeting Feb 21
+# 1. Brayan solve glitches and deliver a first version of KSS
+# 2. During the meeting will test the function for different data and parameters
+
 

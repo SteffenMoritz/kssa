@@ -18,12 +18,21 @@
 kssa <- function(x_ts, #Time-series
                  start.method, # Can select various
                  methods, # Can select various
-                 segments = 6, #Number of segments to ts be divided
-                 iterations = 30, #Number of replicates
-                 percentmd = .3, #Percentage of new MD in simulations
+                 segments, #Number of segments to ts be divided
+                 iterations, #Number of replicates
+                 percentmd, #Percentage of new MD in simulations
                  metric) { #Metrics to evaluate results
 
   # #' @import forecast
+
+  results <- data.frame(
+    "start.method" = as.character(),
+    "actual.method" = as.character(),
+    "rmse" = numeric(),
+    "cor" = numeric(),
+    "mase" = numeric(),
+    "smape"= numeric()
+    )
 
   get_mdoriginal <- function(x, y){
     na_original <- which(is.na(x))
@@ -32,27 +41,28 @@ kssa <- function(x_ts, #Time-series
     return(weight_index)
   }
 
-  split_arbitrary <- function(x, percentmd, n_parts, mdoriginal){
-    size_window_B <- seq(from = round(length(x)/n_parts),
+  split_arbitrary <- function(x, percentmd, segments, mdoriginal){
+    size_window_B <- seq(from = round(length(x)/segments),
                          to = length(x),
-                         by = round(length(x)/n_parts)+1)
-    size_window_A <- size_window_B - (n_parts + 1)
+                         by = round(length(x)/segments)+1)
+    size_window_A <- size_window_B + 1
     size_window_B <- c(size_window_B, length(x))
-    size_window_A <- c(size_window_A, size_window_B[length(size_window_B)-1]+1)
-    size_window_A[1] <- 1
+    #size_window_A <- c(size_window_A, size_window_B[length(size_window_B)-1]+1)
+    size_window_A <- c(1, size_window_A)
 
     index_time <- index(x)
 
     chunks <- c()
 
-    for (i in 1:n_parts) {
+    for (i in 1:segments) {
       chunk <- window(x = x, start = index_time[size_window_A[i]],
                       end = index_time[size_window_B[i]])
 
-      m_a2 <- sample(x = chunk, size = (round(length(chunk)*percentmd)), replace = F,
+      m_a2 <- sample(x = index(chunk), size = (round(length(chunk)*percentmd)), replace = F,
                      prob = mdoriginal[size_window_A[i]:size_window_B[i]])
 
-      chunk[index(m_a2)] <- NA
+      temp <- index(chunk) %in% m_a2
+
 
       chunks <- append(chunks, chunk)
     }
@@ -78,22 +88,49 @@ kssa <- function(x_ts, #Time-series
                                              "na.interp(x_ts)")
                               )
 
-  for (i in 1:length(df_of_methods$methods)) {
-    check <- start.method %in% df_of_methods$methods
-    if (all(check) == TRUE){
-      for (j in 1:length(start.method)) {
-        first_imputed <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == start.method[j]]))
-#Continue... [Here] <- El siguiente paso es introducir mi funcion, luego hay que ver el resultado contemplando una salida multiple de metodo inicial y de metodo secundario
+  check <- start.method %in% df_of_methods$methods
+
+  if (all(check) == TRUE){
+    for (i in 1:length(start.method)) {
+      first_imputed <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == start.method[i]]))
+      mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
+      newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
+
+      for (j in 1:length(methods)) {
+        check2 <- methods %in% df_of_methods$methods
+        if (all(check) == TRUE){
+          actual_imputation <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == methods[j]]))#Here it goes good
+          rmse <- rmse(first_imputed,actual_imputation)
+          cor <- cor(as.vector(first_imputed),as.vector(actual_imputation))^2
+          mase <- mase(first_imputed,actual_imputation)
+          smape <- smape(first_imputed,actual_imputation)
+
+          Tempresults <- data.frame("start.method" = start.method[i],
+                                    "actual.method" = methods[j],
+                                    "rmse" = rmse,
+                                    "cor" = cor,
+                                    "mase" = mase,
+                                    "smape"= smape)
+          results <- bind_rows(results, Tempresults)
+
+        }
+        else{
+          print(paste0("The methods '",
+                       paste(as.character(methods[which(!check2)]),
+                             collapse = ", "),
+                       "' in actual.method parameter, are not in the list of available options"))
+        }
       }
     }
-    else {
-      print(paste0("The methods '",
-                   paste(as.character(start.method[which(!check)]),
-                         collapse = ", "),
-                   "' in start.method parameter, are not in the list of available options"))
-
-    }
   }
+  else {
+    print(paste0("The methods '",
+                 paste(as.character(start.method[which(!check)]),
+                       collapse = ", "),
+                 "' in start.method parameter, are not in the list of available options"))
+  }
+  return(results)
+}
 
 # This is for the starting imputations
 if (start.method == "interpolation") {
@@ -140,7 +177,7 @@ for (i in 1:iterations) {
    y_impute <- na_interpolation(y_na)
 
   # 3. Calculate performance metrics
-  nas <-sum(is.na(y_na))
+  #nas <-sum(is.na(y_na)) #predefined by user so go on
   rmse <- rmse(serie.temporal,y_impute)
   cor <- cor(serie.temporal,y_impute)^2
   mase <- mase(serie.temporal,y_impute)
