@@ -113,40 +113,41 @@ kssa <- function(x_ts, #Time-series
       # Get MD original
       mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
 
-      # Put new simulated MD
-      newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
+      for (k in 1:iterations) {
+        # Put new simulated MD
+        newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
 
-      for (j in 1:length(methods)) {
-        #Check if selected methods are in list of avaliable methods
-        check2 <- methods %in% df_of_methods$methods
+        for (j in 1:length(methods)) {
+          #Check if selected methods are in list of avaliable methods
+          check2 <- methods %in% df_of_methods$methods
 
-        if (all(check) == TRUE){ # if all works correctly
-          # Actual imputation
-          actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
+          if (all(check) == TRUE){ # if all works correctly
+            # Actual imputation
+            actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
 
-          # Get scores
-          rmse <- rmse(first_imputed,actual_imputation)
-          cor <- cor(as.vector(first_imputed),as.vector(actual_imputation))^2
-          mase <- mase(first_imputed,actual_imputation)
-          smape <- smape(first_imputed,actual_imputation)
+            # Get scores
+            rmse <- rmse(coredata(first_imputed),coredata(actual_imputation))
+            cor <- cor(coredata(first_imputed),coredata(actual_imputation))^2
+            mase <- mase(coredata(first_imputed),coredata(actual_imputation))
+            smape <- smape(coredata(first_imputed),coredata(actual_imputation))
 
-          #Storage scores temporarly
-          tempresults <- data.frame("start.method" = start.method[i],
-                                    "actual.method" = methods[j],
-                                    "rmse" = rmse,
-                                    "cor" = cor,
-                                    "mase" = mase,
-                                    "smape"= smape)
+            #Storage scores temporarly
+            tempresults <- data.frame("start.method" = start.method[i],
+                                      "actual.method" = methods[j],
+                                      "rmse" = rmse,
+                                      "cor" = cor,
+                                      "mase" = mase,
+                                      "smape"= smape)
 
-          # Append to final results
-          results <- bind_rows(results, tempresults)
-
-        }
-        else{
-          print(paste0("The methods '",
-                       paste(as.character(methods[which(!check2)]),
-                             collapse = ", "),
-                       "' in actual.method parameter, are not in the list of available options"))
+            # Append to final results
+            results <- bind_rows(results, tempresults)
+          }
+          else {
+            print(paste0("The methods '",
+                         paste(as.character(methods[which(!check2)]),
+                               collapse = ", "),
+                         "' in actual.method parameter, are not in the list of available options"))
+            }
         }
       }
     }
@@ -157,5 +158,16 @@ kssa <- function(x_ts, #Time-series
                        collapse = ", "),
                  "' in start.method parameter, are not in the list of available options"))
   }
-  return(results)
+  summary_results <- first_results %>%
+    group_by(start.method, actual.method) %>%
+    summarise(mean_rmse = mean(rmse),
+              std_rmse = sd(rmse),
+              mean_cor = mean(cor),
+              std_cor = sd(cor),
+              mean_mase = mean(mase),
+              std_mase = sd(mase),
+              mean_smape = mean(smape),
+              std_smape = sd(smape))
+  list_results <- list(results, summary_results)
+  return(list_results)
 }
