@@ -158,7 +158,7 @@ kssa <- function(x_ts, #Time-series
                        collapse = ", "),
                  "' in start.method parameter, are not in the list of available options"))
   }
-  summary_results <- first_results %>%
+  summary_results <- results %>%
     group_by(start.method, actual.method) %>%
     summarise(mean_rmse = mean(rmse),
               std_rmse = sd(rmse),
