@@ -37,3 +37,12 @@ when using the package
 
 # Task for next meeting Feb 28
 # 1. Brayan do class kssa and apply function to plot on it
+
+# Tasks for Next Meeting Thursday March 3 2022
+# 1. Create Documentation files for funcions (Felipe)
+# 2. Create shortcut for "all" methods (Bryan)
+# 3. Create plot.kssa (comes simple from ggpot) (Bryan)
+# 4. Test the function with different time series and find erroes (Steffen, Felipe)
+
+
+
