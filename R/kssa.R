@@ -13,6 +13,7 @@
 #' @import dplyr
 #' @import snpar
 #' @import zoo
+#' @import forecast
 #' @export
 
 kssa <- function(x_ts, #Time-series
@@ -20,12 +21,9 @@ kssa <- function(x_ts, #Time-series
                  methods, # Can select various
                  segments, #Number of segments to ts be divided
                  iterations, #Number of replicates
-                 percentmd, #Percentage of new MD in simulations
-                 metric) { #Metrics to evaluate results
+                 percentmd) { #Percentage of new MD in simulations
 
-  # #' @import forecast
-
-  results <- data.frame(
+  results <- data.frame( #Create data frame where put the final results
     "start.method" = as.character(),
     "actual.method" = as.character(),
     "rmse" = numeric(),
@@ -34,91 +32,122 @@ kssa <- function(x_ts, #Time-series
     "smape"= numeric()
     )
 
+#Function to get original positions of MD
   get_mdoriginal <- function(x, y){
-    na_original <- which(is.na(x))
-    weight_index <- rep(1, length(y))
-    weight_index[na_original] <- 0
-    return(weight_index)
+    na_original <- which(is.na(x)) #Allows get NA index
+    weight_index <- rep(1, length(y)) #Asign weigth of 1
+    weight_index[na_original] <- 0 #Asign weigth of 0 to original MD
+    return(weight_index) #Return index
   }
 
-  split_arbitrary <- function(x, percentmd, segments, mdoriginal){
-    size_window_B <- seq(from = round(length(x)/segments),
-                         to = length(x),
-                         by = round(length(x)/segments)+1)
-    size_window_A <- size_window_B + 1
-    size_window_B <- c(size_window_B, length(x))
+#Function to split TS
+    split_arbitrary <- function(x, percentmd, segments, mdoriginal){ #Arguments
+    size_window_B <- seq(#generate B point of time window
+      from = round(length(x)/segments), #from length / nparts
+                         to = length(x), #to max length of TS
+                         by = round(length(x)/segments)+1 #step by step
+      )
+    size_window_A <- size_window_B + 1 #Generate A point of time window
+    size_window_B <- c(size_window_B, length(x)) #Put last one length
     #size_window_A <- c(size_window_A, size_window_B[length(size_window_B)-1]+1)
-    size_window_A <- c(1, size_window_A)
+    size_window_A <- c(1, size_window_A) #Put firs point on side A
 
-    index_time <- index(x)
+    index_time <- index(x) #get indexes of window
 
-    chunks <- c()
+    chunks <- c() #Vector to contain segments
 
-    for (i in 1:segments) {
-      chunk <- window(x = x, start = index_time[size_window_A[i]],
+    for (i in 1:segments) { #Run loop over segments
+      chunk <- window(x = x, start = index_time[size_window_A[i]], #create chunk
                       end = index_time[size_window_B[i]])
 
-      m_a2 <- sample(x = index(chunk), size = (round(length(chunk)*percentmd)), replace = F,
+      m_a2 <- sample(x = index(chunk), #Take new sample for simlate new MD
+                     size = (round(length(chunk)*percentmd)), replace = F,
                      prob = mdoriginal[size_window_A[i]:size_window_B[i]])
 
       temp <- index(chunk) %in% m_a2
 
+      chunk[temp == TRUE] <- NA
 
       chunks <- append(chunks, chunk)
     }
     return(chunks)
   }
 
-
-# 1. IMPUT DATA FOR DIFFERENT SPECIES SEPEC ####
-
-  df_of_methods <- data.frame("methods" =c("auto.arima", "StructTS", "linear",
-                                           "spline", "stine", "simple", "malinear",
-                                           "exponential", "kalman", "nalocf", "decomp"),
-                              "formulas" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
-                                             "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
-                                             "na_interpolation(x_ts,option='linear')",
-                                             "na_interpolation(x_ts,option='spline')",
-                                             "na_interpolation(x_ts,option='stine')",
-                                             "na_ma(x_ts,k=3,weighting = 'simple')",
-                                             "na_ma(x_ts,k=3,weighting = 'linear')",
-                                             "na_ma(x_ts,k=3,weighting = 'exponential')",
-                                             "na_seadec(x_ts,algorithm = 'kalman')",
-                                             "na_locf(x_ts,option = 'locf',na_remaining = 'rev')",
-                                             "na.interp(x_ts)")
+# Generate df of imputation methods and formulas
+  df_of_methods <- data.frame(
+    "methods" =c("auto.arima", "StructTS", "linear",
+                 "spline", "stine", "simple", "malinear",
+                 "exponential", "kalman", "nalocf", "decomp"),
+    "formulas_x_ts" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
+                        "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
+                        "na_interpolation(x_ts,option='linear')",
+                        "na_interpolation(x_ts,option='spline')",
+                        "na_interpolation(x_ts,option='stine')",
+                        "na_ma(x_ts,k=3,weighting = 'simple')",
+                        "na_ma(x_ts,k=3,weighting = 'linear')",
+                        "na_ma(x_ts,k=3,weighting = 'exponential')",
+                        "na_seadec(x_ts,algorithm = 'kalman')",
+                        "na_locf(x_ts,option = 'locf',na_remaining = 'rev')",
+                        "na.interp(x_ts)"),
+    "formulas_actual_ts" = c("na_kalman(newmdsimulation,model='auto.arima',smooth = TRUE,nit = -1)",
+                             "na_kalman(newmdsimulation,model='StructTS',smooth = TRUE,nit = -1)",
+                             "na_interpolation(newmdsimulation,option='linear')",
+                             "na_interpolation(newmdsimulation,option='spline')",
+                             "na_interpolation(newmdsimulation,option='stine')",
+                             "na_ma(newmdsimulation,k=3,weighting = 'simple')",
+                             "na_ma(newmdsimulation,k=3,weighting = 'linear')",
+                             "na_ma(newmdsimulation,k=3,weighting = 'exponential')",
+                             "na_seadec(newmdsimulation,algorithm = 'kalman')",
+                             "na_locf(newmdsimulation,option = 'locf',na_remaining = 'rev')",
+                             "na.interp(newmdsimulation)")
                               )
 
+  #Check if start methods are in list of avaliable methods
   check <- start.method %in% df_of_methods$methods
 
   if (all(check) == TRUE){
     for (i in 1:length(start.method)) {
-      first_imputed <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == start.method[i]]))
+      # First imputation
+      first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == start.method[i]]))
+
+      # Get MD original
       mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
-      newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
 
-      for (j in 1:length(methods)) {
-        check2 <- methods %in% df_of_methods$methods
-        if (all(check) == TRUE){
-          actual_imputation <- eval(parse(text = df_of_methods$formulas[df_of_methods$methods == methods[j]]))#Here it goes good
-          rmse <- rmse(first_imputed,actual_imputation)
-          cor <- cor(as.vector(first_imputed),as.vector(actual_imputation))^2
-          mase <- mase(first_imputed,actual_imputation)
-          smape <- smape(first_imputed,actual_imputation)
+      for (k in 1:iterations) {
+        # Put new simulated MD
+        newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = percentmd, segments = segments, mdoriginal = mdoriginal)
 
-          Tempresults <- data.frame("start.method" = start.method[i],
-                                    "actual.method" = methods[j],
-                                    "rmse" = rmse,
-                                    "cor" = cor,
-                                    "mase" = mase,
-                                    "smape"= smape)
-          results <- bind_rows(results, Tempresults)
+        for (j in 1:length(methods)) {
+          #Check if selected methods are in list of avaliable methods
+          check2 <- methods %in% df_of_methods$methods
 
-        }
-        else{
-          print(paste0("The methods '",
-                       paste(as.character(methods[which(!check2)]),
-                             collapse = ", "),
-                       "' in actual.method parameter, are not in the list of available options"))
+          if (all(check) == TRUE){ # if all works correctly
+            # Actual imputation
+            actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
+
+            # Get scores
+            rmse <- rmse(coredata(first_imputed),coredata(actual_imputation))
+            cor <- cor(coredata(first_imputed),coredata(actual_imputation))^2
+            mase <- mase(coredata(first_imputed),coredata(actual_imputation))
+            smape <- smape(coredata(first_imputed),coredata(actual_imputation))
+
+            #Storage scores temporarly
+            tempresults <- data.frame("start.method" = start.method[i],
+                                      "actual.method" = methods[j],
+                                      "rmse" = rmse,
+                                      "cor" = cor,
+                                      "mase" = mase,
+                                      "smape"= smape)
+
+            # Append to final results
+            results <- bind_rows(results, tempresults)
+          }
+          else {
+            print(paste0("The methods '",
+                         paste(as.character(methods[which(!check2)]),
+                               collapse = ", "),
+                         "' in actual.method parameter, are not in the list of available options"))
+            }
         }
       }
     }
@@ -129,71 +158,16 @@ kssa <- function(x_ts, #Time-series
                        collapse = ", "),
                  "' in start.method parameter, are not in the list of available options"))
   }
-  return(results)
+  summary_results <- results %>%
+    group_by(start.method, actual.method) %>%
+    summarise(mean_rmse = mean(rmse),
+              std_rmse = sd(rmse),
+              mean_cor = mean(cor),
+              std_cor = sd(cor),
+              mean_mase = mean(mase),
+              std_mase = sd(mase),
+              mean_smape = mean(smape),
+              std_smape = sd(smape))
+  list_results <- list(results, summary_results)
+  return(list_results)
 }
-
-# This is for the starting imputations
-if (start.method == "interpolation") {
-  start_data <- imputeTS::na.interpolation(x_ts)
-}
-else if (start.method == "auto.arima") {
-  start_data <- imputeTS::na.interpolation(x_ts)
-}
-  else if (start.method == "auto.arima") {
-    start_data <- imputeTS::na.interpolation(x_ts)
-  }
-
-#x_imput_aa=na_kalman(x_ts,model="auto.arima",smooth = TRUE,nit = -1) #m?todo Structured Model
-#x_imput_st=na_kalman(x_ts,model="StructTS",smooth = TRUE,nit = -1) #m?todo auto.arima
-#x_imput_itl=na_interpolation(x_ts,option="linear") #m?todo interpolacion lineal
-#x_imput_its=na_interpolation(x_ts,option="spline") #m?todo interpolaci?n spline
-#x_imput_itst=na_interpolation(x_ts,option="stine") #m?todo interpolaci?n spline
-#x_imput_mas=na_ma(x_ts,k=3,weighting = "simple") #m?todo moving average simple
-#x_imput_mal=na_ma(x_ts,k=3,weighting = "linear") #m?todo moving average linear
-#x_imput_mae=na_ma(x_ts,k=3,weighting = "exponential") #m?todo moving average exponential
-#x_imput_seadec=na_seadec(x_ts,algorithm = "kalman") #m?todo de imputacion kalman en serie estacionalmente descompuesta
-#x_imput_locf=na_locf(x_ts,option = "locf",na_remaining = "rev") #metodo de ultima observacion hacia delante
-#x_imput_stl=na.interp(x_ts) #metodo de descomposici?n STL con interpolaci?n lineal
-
-
-
-
-#2. VALIDATION WHEN SIMULATING THE NA'S STRUCTURE OF DATA IN CHUNKSSS ####
-
-
-#here we need a code line to split the time series and specify where to put simulation windows
-
-for (i in 1:iterations) {
-  # 1. Simulate new MD
-  brayans_function()
-
-  # 2. Make imputations on simulated MD
-  #y_impute <- na_kalman(y_na,model="StructTS",nit = -1)
-
-  for (i in methods) {
-
-    if (i == "intpoltaion")
-  }
-   y_impute <- na_interpolation(y_na)
-
-  # 3. Calculate performance metrics
-  #nas <-sum(is.na(y_na)) #predefined by user so go on
-  rmse <- rmse(serie.temporal,y_impute)
-  cor <- cor(serie.temporal,y_impute)^2
-  mase <- mase(serie.temporal,y_impute)
-  smape <- smape(serie.temporal,y_impute)
-
-
-  # 4. Store metrics in a temporal table
-  temporal1 <- data.frame(nas,rmse, cor,mase,smape)
-  colnames(temporal1)=c("nas","rmse","cor","mase","smape")
-
-  # 5. Assign metrics in the temporal table to a final table
-  results_table <- bind_rows(results_table, temporal1)
-}
-
-#Create a data.frame with final table
-return(results_table)
-
-}
-

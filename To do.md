@@ -35,4 +35,5 @@ when using the package
 # 1. Brayan solve glitches and deliver a first version of KSS
 # 2. During the meeting will test the function for different data and parameters
 
-
+# Task for next meeting Feb 28
+# 1. Brayan do class kssa and apply function to plot on it
