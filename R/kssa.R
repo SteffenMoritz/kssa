@@ -176,6 +176,9 @@ kssa <- function(x_ts, #Time-series
               std_mase = sd(mase),
               mean_smape = mean(smape),
               std_smape = sd(smape))
+  class(results) <- 'kssa.table'
+  class(summary_results) <- 'kssa.table'
+
   list_results <- list(results, summary_results)
   return(list_results)
 }
