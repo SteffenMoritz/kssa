@@ -102,6 +102,14 @@ kssa <- function(x_ts, #Time-series
                              "na.interp(newmdsimulation)")
                               )
 
+  start.method <- ifelse(start.method == 'all',
+                         df_of_methods$methods,
+                         start.method)
+
+  methods <- ifelse(methods == 'all',
+                    df_of_methods$methods,
+                    methods)
+
   #Check if start methods are in list of avaliable methods
   check <- start.method %in% df_of_methods$methods
 
