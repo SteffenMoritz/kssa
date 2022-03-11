@@ -37,3 +37,12 @@ when using the package
 
 # Task for next meeting Feb 28
 # 1. Brayan do class kssa and apply function to plot on it
+
+###################################################################
+#### New function kssa2 in repositories 
+###################################################################
+
+# Commit
+# How to connect kssa2 and kssa_plot as a function when we try to build the package
+# Actually don't works
+
