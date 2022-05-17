@@ -21,7 +21,8 @@ kssa <- function(x_ts, #Time-series
                  methods, # Can select various
                  segments, #Number of segments to ts be divided
                  iterations, #Number of replicates
-                 percentmd) { #Percentage of new MD in simulations
+                 percentmd = sample(x = 1:50, size = 1)/100,#Percentage of new MD in simulations
+                 seed = 1234) { #seed number
 
   results <- data.frame( #Create data frame where put the final results
     "start.method" = as.character(),
@@ -29,7 +30,8 @@ kssa <- function(x_ts, #Time-series
     "rmse" = numeric(),
     "cor" = numeric(),
     "mase" = numeric(),
-    "smape"= numeric()
+    "smape"= numeric(),
+    "seed" = numeric()
     )
 
 #Function to get original positions of MD
@@ -41,12 +43,12 @@ kssa <- function(x_ts, #Time-series
   }
 
 #Function to split TS
-    split_arbitrary <- function(x, percentmd, segments, mdoriginal){ #Arguments
+  split_arbitrary <- function(x, segments, mdoriginal){ #Arguments
     size_window_B <- seq(#generate B point of time window
       from = round(length(x)/segments), #from length / nparts
-                         to = length(x), #to max length of TS
-                         by = round(length(x)/segments)+1 #step by step
-      )
+      to = length(x), #to max length of TS
+      by = round(length(x)/segments)+1 #step by step
+    )
     size_window_A <- size_window_B + 1 #Generate A point of time window
     size_window_B <- c(size_window_B, length(x)) #Put last one length
     #size_window_A <- c(size_window_A, size_window_B[length(size_window_B)-1]+1)
@@ -60,8 +62,10 @@ kssa <- function(x_ts, #Time-series
       chunk <- window(x = x, start = index_time[size_window_A[i]], #create chunk
                       end = index_time[size_window_B[i]])
 
+      #percentmd <- sample(x = 1:50, size = 1)/100
+
       m_a2 <- sample(x = index(chunk), #Take new sample for simlate new MD
-                     size = (round(length(chunk)*percentmd)), replace = F,
+                     size = (ceiling(length(chunk)*percentmd)), replace = F,
                      prob = mdoriginal[size_window_A[i]:size_window_B[i]])
 
       temp <- index(chunk) %in% m_a2
@@ -73,7 +77,7 @@ kssa <- function(x_ts, #Time-series
     return(chunks)
   }
 
-# Generate df of imputation methods and formulas
+  # Generate df of imputation methods and formulas
   df_of_methods <- data.frame(
     "methods" =c("auto.arima", "StructTS", "linear",
                  "spline", "stine", "simple", "malinear",
@@ -100,7 +104,7 @@ kssa <- function(x_ts, #Time-series
                              "na_seadec(newmdsimulation,algorithm = 'kalman')",
                              "na_locf(newmdsimulation,option = 'locf',na_remaining = 'rev')",
                              "na.interp(newmdsimulation)")
-                              )
+  )
 
   start.method <- ifelse(start.method == 'all',
                          df_of_methods$methods,
@@ -110,28 +114,31 @@ kssa <- function(x_ts, #Time-series
                     df_of_methods$methods,
                     methods)
 
+  #generate seeds
+  set.seed(seed); seeds <- sample(1:9999, iterations)
+
   #Check if start methods are in list of avaliable methods
   check <- start.method %in% df_of_methods$methods
 
   if (all(check) == TRUE){
     for (i in 1:length(start.method)) {
       # First imputation
-      first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == start.method[i]]))
+      set.seed(seed); first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == start.method[i]]))
 
       # Get MD original
       mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
 
       for (k in 1:iterations) {
         # Put new simulated MD
-        newmdsimulation <- split_arbitrary(x = first_imputed, segments = segments, mdoriginal = mdoriginal)
-
+        set.seed(seeds[k]); newmdsimulation <- split_arbitrary(x = first_imputed, segments = segments, mdoriginal = mdoriginal)
+        na_count <- sum(is.na(newmdsimulation))/length(newmdsimulation)
         for (j in 1:length(methods)) {
           #Check if selected methods are in list of avaliable methods
           check2 <- methods %in% df_of_methods$methods
 
           if (all(check) == TRUE){ # if all works correctly
             # Actual imputation
-            actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
+            set.seed(seeds[k]); actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
 
             # Get scores
             rmse <- rmse(coredata(first_imputed),coredata(actual_imputation))
@@ -142,10 +149,12 @@ kssa <- function(x_ts, #Time-series
             #Storage scores temporarly
             tempresults <- data.frame("start.method" = start.method[i],
                                       "actual.method" = methods[j],
+                                      "percent_md" = na_count,
                                       "rmse" = rmse,
                                       "cor" = cor,
                                       "mase" = mase,
-                                      "smape"= smape)
+                                      "smape"= smape,
+                                      "seed" = seeds[k])
 
             # Append to final results
             results <- bind_rows(results, tempresults)
@@ -155,7 +164,7 @@ kssa <- function(x_ts, #Time-series
                          paste(as.character(methods[which(!check2)]),
                                collapse = ", "),
                          "' in actual.method parameter, are not in the list of available options"))
-            }
+          }
         }
       }
     }
@@ -166,9 +175,12 @@ kssa <- function(x_ts, #Time-series
                        collapse = ", "),
                  "' in start.method parameter, are not in the list of available options"))
   }
+
   summary_results <- results %>%
     group_by(start.method, actual.method) %>%
-    summarise(mean_rmse = mean(rmse),
+    summarise(mean_na = mean(percent_md),
+              std_na = sd(percent_md),
+              mean_rmse = mean(rmse),
               std_rmse = sd(rmse),
               mean_cor = mean(cor),
               std_cor = sd(cor),
@@ -176,18 +188,23 @@ kssa <- function(x_ts, #Time-series
               std_mase = sd(mase),
               mean_smape = mean(smape),
               std_smape = sd(smape))
+
+
+  best_result <- results[which.min(results[,3]),]
+  set.seed(seed); first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == best_result$start.method]))
+  mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
+  set.seed(best_result$seed); newmdsimulation <- split_arbitrary(x = first_imputed, segments = segments, mdoriginal = mdoriginal)
+  set.seed(best_result$seed); actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == best_result$actual.method]))
+  rmse_final <- rmse(coredata(first_imputed),coredata(actual_imputation))
+
+  results <- results[1:(length(results)-1)]
+
   results_df <- results
   summary_results_df <- as.data.frame(summary_results)
 
   class(results) <- 'kssa.table'
   class(summary_results) <- 'kssa.table'
 
-  best_result <- results_df[which.min(results_df[,3]),]
-  first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == best_result$start.method]))
-  mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
-  newmdsimulation <- split_arbitrary(x = first_imputed, percentmd = best_result$percent_md, segments = segments, mdoriginal = mdoriginal)
-  actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == best_result$actual.method]))
-  rmse_final <- rmse(coredata(first_imputed),coredata(actual_imputation))
 
   list_results <- list(results, summary_results, results_df, summary_results_df, actual_imputation, rmse_final)
   return(list_results)
