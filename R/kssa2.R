@@ -182,9 +182,19 @@ kssa <- function(x_ts, #Time-series
               std_mase = sd(mase),
               mean_smape = mean(smape),
               std_smape = sd(smape))
+  results_df <- results
+  summary_results_df <- as.data.frame(summary_results)
+
   class(results) <- 'kssa.table'
   class(summary_results) <- 'kssa.table'
 
-  list_results <- list(results, summary_results)
+  best_result <- results_df[which.min(results_df[,3]),]
+  first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == best_result$start.method]))
+  mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
+  newmdsimulation <- split_arbitrary(x = first_imputed, segments = segments, mdoriginal = mdoriginal)
+  actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == best_result$actual.method]))
+  rmse_final <- rmse(coredata(first_imputed),coredata(actual_imputation))
+
+  list_results <- list(results, summary_results, results_df, summary_results_df, actual_imputation, rmse_final)
   return(list_results)
 }
