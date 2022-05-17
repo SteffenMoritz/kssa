@@ -206,6 +206,6 @@ kssa <- function(x_ts, #Time-series
   class(summary_results) <- 'kssa.table'
 
 
-  list_results <- list(results, summary_results, results_df, summary_results_df, actual_imputation, rmse_final)
+  list_results <- list(results, summary_results, results_df, summary_results_df, ts(actual_imputation), rmse_final)
   return(list_results)
 }
