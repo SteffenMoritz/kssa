@@ -27,6 +27,7 @@ kssa <- function(x_ts, #Time-series
   results <- data.frame( #Create data frame where put the final results
     "start.method" = as.character(),
     "actual.method" = as.character(),
+    "percent_md" = numeric(),
     "rmse" = numeric(),
     "cor" = numeric(),
     "mase" = numeric(),
@@ -106,13 +107,21 @@ kssa <- function(x_ts, #Time-series
                              "na.interp(newmdsimulation)")
   )
 
-  start.method <- ifelse(start.method == 'all',
-                         df_of_methods$methods,
-                         start.method)
+  if(start.method == 'all'){
+    start.method <- c("auto.arima", "StructTS", "linear",
+                      "spline", "stine", "simple", "malinear",
+                      "exponential", "kalman", "nalocf", "decomp")
+  } else {
+    start.method <- start.method
+  }
 
-  methods <- ifelse(methods == 'all',
-                    df_of_methods$methods,
-                    methods)
+  if(methods == 'all'){
+    methods <- c("auto.arima", "StructTS", "linear",
+                      "spline", "stine", "simple", "malinear",
+                      "exponential", "kalman", "nalocf", "decomp")
+  } else {
+    methods <- methods
+  }
 
   #generate seeds
   set.seed(seed); seeds <- sample(1:9999, iterations)
