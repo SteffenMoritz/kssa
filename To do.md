@@ -31,4 +31,28 @@
 # 2. Steffen works on a list of possible errors or warnings that users should get
 when using the package
 
+#Task for next meeting Feb 21
+# 1. Brayan solve glitches and deliver a first version of KSS
+# 2. During the meeting will test the function for different data and parameters
+
+# Task for next meeting Feb 28
+# 1. Brayan do class kssa and apply function to plot on it
+
+
+# Tasks for Next Meeting Thursday March 3 2022
+# 1. Create Documentation files for funcions (Felipe)
+# 2. Create shortcut for "all" methods (Bryan)
+# 3. Create plot.kssa (comes simple from ggpot) (Bryan)
+# 4. Test the function with different time series and find erroes (Steffen, Felipe)
+
+
+
+###################################################################
+#### New function kssa2 in repositories 
+###################################################################
+
+# Commit
+# How to connect kssa2 and kssa_plot as a function when we try to build the package
+# Actually don't works
+
 

@@ -20,9 +20,9 @@ kssa <- function(x_ts, #Time-series
                  start.method, # Can select various
                  methods, # Can select various
                  segments, #Number of segments to ts be divided
-                 iterations, #Number of replicates
-                 percentmd = sample(x = 1:50, size = 1)/100,#Percentage of new MD in simulations
-                 seed = 1234) { #seed number
+                 iterations, # #Number of replicates
+                 seed = 1234){ #, seed
+  #                 percentmd) { #Percentage of new MD in simulations
 
   results <- data.frame( #Create data frame where put the final results
     "start.method" = as.character(),
@@ -33,9 +33,9 @@ kssa <- function(x_ts, #Time-series
     "mase" = numeric(),
     "smape"= numeric(),
     "seed" = numeric()
-    )
+  )
 
-#Function to get original positions of MD
+  #Function to get original positions of MD
   get_mdoriginal <- function(x, y){
     na_original <- which(is.na(x)) #Allows get NA index
     weight_index <- rep(1, length(y)) #Asign weigth of 1
@@ -43,7 +43,7 @@ kssa <- function(x_ts, #Time-series
     return(weight_index) #Return index
   }
 
-#Function to split TS
+  #Function to split TS
   split_arbitrary <- function(x, segments, mdoriginal){ #Arguments
     size_window_B <- seq(#generate B point of time window
       from = round(length(x)/segments), #from length / nparts
@@ -63,7 +63,7 @@ kssa <- function(x_ts, #Time-series
       chunk <- window(x = x, start = index_time[size_window_A[i]], #create chunk
                       end = index_time[size_window_B[i]])
 
-      #percentmd <- sample(x = 1:50, size = 1)/100
+      percentmd <- sample(x = 1:50, size = 1)/100
 
       m_a2 <- sample(x = index(chunk), #Take new sample for simlate new MD
                      size = (ceiling(length(chunk)*percentmd)), replace = F,
@@ -117,8 +117,8 @@ kssa <- function(x_ts, #Time-series
 
   if(methods == 'all'){
     methods <- c("auto.arima", "StructTS", "linear",
-                      "spline", "stine", "simple", "malinear",
-                      "exponential", "kalman", "nalocf", "decomp")
+                 "spline", "stine", "simple", "malinear",
+                 "exponential", "kalman", "nalocf", "decomp")
   } else {
     methods <- methods
   }
