@@ -13,15 +13,19 @@ RoxygenNote: 7.1.1
 URL: https://github.com/SteffenMoritz/kssa,
     https://steffenmoritz.github.io/kssa/
 BugReports: https://github.com/SteffenMoritz/kssa/issues
+Depends:
+    R (>= 3.6)
 Suggests: 
     covr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
     magrittr,
+    ggplot2,
+    rlang,
+    forecast,
     imputeTS,
-    imputeFin,
-    sjmisc,
+    stats,
+    zoo,
     Metrics,
-    dplyr,
-    snpar
+    dplyr
