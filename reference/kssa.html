@@ -53,15 +53,33 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">kssa</span><span class="op">(</span><span class="va">x_ts</span>, <span class="va">start.method</span>, segments <span class="op">=</span> <span class="fl">6</span>, <span class="va">iterations</span>, <span class="va">metric</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">kssa</span><span class="op">(</span>
+  <span class="va">x_ts</span>,
+  <span class="va">start_method</span>,
+  <span class="va">methods</span>,
+  <span class="va">segments</span>,
+  <span class="va">iterations</span>,
+  percentmd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>,
+  seed <span class="op">=</span> <span class="fl">1234</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>x</dt>
-<dd><p>A number</p></dd>
-<dt>y</dt>
-<dd><p>A number</p></dd>
+    <dl><dt>x_ts</dt>
+<dd><p>The input time series</p></dd>
+<dt>start_method</dt>
+<dd><p>The starting method for the algorithm</p></dd>
+<dt>methods</dt>
+<dd><p>The methods that shall be compared</p></dd>
+<dt>segments</dt>
+<dd><p>Into how many segments the dataset shall be divided</p></dd>
+<dt>iterations</dt>
+<dd><p>How many iterations to run</p></dd>
+<dt>percentmd</dt>
+<dd><p>Percent of missing data</p></dd>
+<dt>seed</dt>
+<dd><p>Seed to choose</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -80,7 +98,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>
