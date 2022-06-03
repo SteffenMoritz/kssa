@@ -110,17 +110,17 @@ kssa <- function(x_ts, # Time-series
   )
 
   if(start_method == 'all'){ # Define 'all' statement
-    start_method <- c("auto.arima", "StructTS", "linear",
-                      "spline", "stine", "simple", "malinear",
-                      "exponential", "kalman", "nalocf", "decomp")
+    start_method <- c("auto.arima", "StructTS", "linear_i",
+                      "spline_i", "stine_i", "simple_ma", "linear_ma",
+                      "exponential_ma", "seadec", "locf", "decomp")
   } else {
     start_method <- start_method
   }
 
   if(length(methods) == 1 && methods == 'all'){ # Define 'all' statement
-    methods <- c("auto.arima", "StructTS", "linear",
-                      "spline", "stine", "simple", "malinear",
-                      "exponential", "kalman", "nalocf", "decomp")
+    methods <- c("auto.arima", "StructTS", "linear_i",
+                 "spline_i", "stine_i", "simple_ma", "linear_ma",
+                 "exponential_ma", "seadec", "locf", "decomp")
   } else {
     methods <- methods
   }
