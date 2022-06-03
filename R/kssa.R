@@ -1,9 +1,16 @@
 #' @title kssa Algorithm
 #'
 #' @description Function to add two numbers
-#' @param x_ts The input time series
+#' @param x_ts time series object (ts) containing missing data (NA)
 #' @param start_method The starting method for the algorithm
-#' @param methods The methods that shall be compared
+#' @param methods actual.methods	A string vector containing the following
+#'  methods:
+#'
+#'   c(“auto.arima”, “StructTS”, “linear”, “spline”, “stine”,
+#'  “simple”, “malinear”, “exponential”, “kalman”, “nalocf”, “decomp”) .
+#'  “all”	compares among all imputation methods#'
+#'
+#'
 #' @param segments Into how many segments the dataset shall be divided
 #' @param iterations How many iterations to run
 #' @param percentmd Percent of missing data
