@@ -80,9 +80,9 @@ kssa <- function(x_ts, #' Time-series
 
   #' Generate df of imputation methods and formulas
   df_of_methods <- data.frame(
-    "methods" =c("auto.arima", "StructTS", "linear",
-                 "spline", "stine", "simple", "malinear",
-                 "exponential", "kalman", "nalocf", "decomp"),
+    "methods" =c("auto.arima", "StructTS", "linear_i",
+                 "spline_i", "stine_i", "simple_ma", "linear_ma",
+                 "exponential_ma", "seadec", "locf", "decomp"),
     "formulas_x_ts" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
                         "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
                         "na_interpolation(x_ts,option='linear')",
