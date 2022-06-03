@@ -87,4 +87,4 @@ kssa_plot <- function(
     print("Error: data must be a kssa.table object")
   }
   return(plot)
-} # End
+} # End of code
