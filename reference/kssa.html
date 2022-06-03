@@ -67,11 +67,14 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x_ts</dt>
-<dd><p>The input time series</p></dd>
+<dd><p>time series object (ts) containing missing data (NA)</p></dd>
 <dt>start_method</dt>
 <dd><p>The starting method for the algorithm</p></dd>
 <dt>methods</dt>
-<dd><p>The methods that shall be compared</p></dd>
+<dd><p>actual.methods    A string vector containing the following
+methods: c(“auto.arima”, “StructTS”, “linear”, “spline”, “stine”,
+“simple”, “malinear”, “exponential”, “kalman”, “nalocf”, “decomp”) .
+“all”    compares among all imputation methods</p></dd>
 <dt>segments</dt>
 <dd><p>Into how many segments the dataset shall be divided</p></dd>
 <dt>iterations</dt>
