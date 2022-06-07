@@ -1,21 +1,36 @@
 #' @title kssa Algorithm
 #'
-#' @description Function to add two numbers
-#' @param x_ts time series object (ts) containing missing data (NA)
-#' @param start_method The starting method for the algorithm
-#' @param methods actual.methods	A string vector containing the following
-#'  methods:
+#' @description Run the Known Sub-Sequence Algorithm to compare imputation methods for time series data
+#' @param x_ts Time series object (ts) containing missing data (NA)
+#' @param start_methods The method or methods to start the algorithm.
+#'  It can be a string vector containing the following 11 iimputation methods
 #'
-#'   c(“auto.arima”, “StructTS”, “linear”, “spline”, “stine”,
-#'  “simple”, “malinear”, “exponential”, “kalman”, “nalocf”, “decomp”) .
-#'  “all”	compares among all imputation methods#'
+#' \itemize{
+#'    \item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
+#'    "simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
+#'    "locf", "decomp")} (default choice) - or a subset of these
+#'    \item{set to "all" to start with all methods automatically} - Default choice
+#'    }
 #'
+#' @param actual_methods The imputation methods to compare. It can be a string vector containing the following
+#'  11 imputation methods:
 #'
-#' @param segments Into how many segments the dataset shall be divided
+#' \itemize{
+#'    \item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
+#'    "simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
+#'    "locf", "decomp")} (default choice) - or a subset of these
+#'    \item{or "all" to compare among all methods automatically} - Default choice
+#'    }
+#'
+#'    For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}
+#'
+#' @param segments Into how many segments the time series will be divided
 #' @param iterations How many iterations to run
-#' @param percentmd Percent of missing data
-#' @param seed Seed to choose
-#' @return The sum of \code{x} and \code{y}
+#' @param percentmd Percent of missing data. Must match with the true percentage of missing data in x_ts
+#' @param seed Random seed to choose (can be any number)
+#' @return A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
+#' @references Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.
+#' \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}{Full text publication}.
 #'
 #' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
 #' @importFrom forecast na.interp
@@ -24,6 +39,38 @@
 #' @importFrom zoo coredata index
 #' @importFrom rlang .data
 #' @export
+#' @examples # create a numeric vector with 20% missing data
+#' x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+#'
+#' # convert x to a time series object
+#' x_ts = ts(x)
+#'
+#' # apply the kssa algorithm with 2 segments,
+#' # 10 iterations and 20% of missing data.
+#' # Remember that percentmd must match with
+#' # the real percentaje of missing data in the
+#' # input time series
+#'
+#' results_kssa = kssa(x_ts,
+#'                start_method = "all",
+#'                methods = "all",
+#'                segments = 2,
+#'                iterations = 10,
+#'                percentmd = 0.2)
+#'
+#' # print results
+#' results_kssa
+#'
+#' # plot complete results with Root Mean Squared Error for easy
+#' # interpretation
+#' kssa_plot(results_kssa, type = "complete", metric = "rmse")
+#'
+#' # Conclusion: Since the kssa_plot is ordered from lower to
+#' # higher (left to right) average error, the method
+#' # exponential_ma (exponential moving average) is
+#' # the best to impute missing data in x_tx.
+#'
+
 
 kssa <- function(x_ts, # Time-series
                  start_method, # Can select various

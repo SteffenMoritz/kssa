@@ -2,7 +2,6 @@
 
 export("%>%")
 export(kssa)
-export(kssa2)
 export(kssa_plot)
 import(dplyr)
 import(ggplot2)
