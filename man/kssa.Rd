@@ -6,8 +6,8 @@
 \usage{
 kssa(
   x_ts,
-  start_method,
-  methods,
+  start_methods,
+  actual_methods,
   segments,
   iterations,
   percentmd = sample(x = 1:50, size = 1)/100,
@@ -15,37 +15,40 @@ kssa(
 )
 }
 \arguments{
-\item{x_ts}{Time series object (ts) containing missing data (NA)}
+\item{x_ts}{Time series object \code{\link{ts}} containing missing data (NA)}
 
-\item{segments}{Into how many segments the time series will be divided}
-
-\item{iterations}{How many iterations to run}
-
-\item{percentmd}{Percent of missing data. Must match with the true percentage of missing data in x_ts}
-
-\item{seed}{Random seed to choose (can be any number)}
-
-\item{start_methods}{The method or methods to start the algorithm.
-It can be a string vector containing the following 11 iimputation methods
-
-\itemize{
-\item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
-"simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
-"locf", "decomp")} (default choice) - or a subset of these
-\item{set to "all" to start with all methods automatically} - Default choice
-}}
+\item{start_methods}{String vector. The method or methods to start the algorithm.
+Same as for actual_methods}
 
 \item{actual_methods}{The imputation methods to compare. It can be a string vector containing the following
 11 imputation methods:
 
 \itemize{
-\item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
-"simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
-"locf", "decomp")} (default choice) - or a subset of these
-\item{or "all" to compare among all methods automatically} - Default choice
+\item{"all" - compare among all methods automatically - Default}
+\item{"auto.arima" - State space representation of an ARIMA model}
+\item{"StructTS" - State space representation of a structural model}
+\item{"seadec" - Seasonal decomposition with Kalman smoothing}
+\item{"linear_i" - simple linear interpolation}
+\item{"spline_i" - spline interpolation}
+\item{"stine_i" - Stineman interpolation}
+\item{"simple_ma" - Stineman interpolation}
+\item{"stine_i" - Stineman interpolation}
+\item{"simple_ma" - Simple moving average}
+\item{"linear_ma" - Linear moving average}
+\item{"exponential_ma" - Exponential moving average}
+\item{"locf" - Last observation carried forward}
+\item{"stl" - Seasonal and trend decomposition with Loess}
 }
 
 For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}}
+
+\item{segments}{Integer. Into how many segments the time series will be divided}
+
+\item{iterations}{Integer. How many iterations to run}
+
+\item{percentmd}{Percentage of missing data. Must match with the true percentage of missing data in x_ts}
+
+\item{seed}{Numeric. Random seed to choose}
 }
 \value{
 A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
@@ -67,8 +70,8 @@ x_ts = ts(x)
 # input time series
 
 results_kssa = kssa(x_ts,
-               start_method = "all",
-               methods = "all",
+               start_methods = "all",
+               actual_methods = "all",
                segments = 2,
                iterations = 10,
                percentmd = 0.2)

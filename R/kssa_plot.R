@@ -5,13 +5,20 @@
 #' @param type A character value with the type of plot to show.
 #' It can be "summary" or "complete".
 #'
-#' @param metric A character with the performance metric to be plotted
+#' @param metric A character with the performance metric to be plotted.
 #' It can be  "rmse", "mase," "cor", or "smape"
+#'
+#' \itemize{
+#'    \item{"rmse" -  Root Mean Squared Error} (default choice)
+#'    \item{"mase" - Mean Absolute Scaled Error}
+#'    \item{"smape" - Symmetric Mean Absolute Percentage Error}
+#'    \item{"cor" - Pearson correlation coefficient}
+#'    }
 #'
 #' For further details on these metrics please check package \code{\link{Metrics}}
 #'
-#' @return A plot of kssa results ordered from lower to higher (left to right)
-#' averaged error
+#' @return A plot of kssa results in which imputation methods are ordered
+#' from lower to higher (left to right) error.
 #'
 #' @examples # create a numeric vector with 20% missing data
 #' x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
@@ -26,8 +33,8 @@
 #' # input time series
 #'
 #' results_kssa = kssa(x_ts,
-#'                start_method = "all",
-#'                methods = "all",
+#'                start_methods = "all",
+#'                actual_methods = "all",
 #'                segments = 2,
 #'                iterations = 10,
 #'                percentmd = 0.2)
@@ -59,16 +66,16 @@ kssa_plot <- function(
   if (class(results[[1]]) == 'kssa.table' & class(results[[2]]) == 'kssa.table'){
 
     # Extract complete data from kssa.tables object
-    plot1 <- data.frame("start_method" = results[[1]]$start_method,
-                              "actual_method" = results[[1]]$actual_method,
+    plot1 <- data.frame("start_methods" = results[[1]]$start_methods,
+                              "actual_methods" = results[[1]]$actual_methods,
                               "rmse" = results[[1]]$rmse,
                               "cor" = results[[1]]$cor,
                               "mase" = results[[1]]$mase,
                               "smape"= results[[1]]$smape)
 
     # Extract summary information from kssa.table objects
-    plot2 <- data.frame("start_method" = results[[2]]$start_method,
-                        "actual_method" = results[[2]]$actual_method,
+    plot2 <- data.frame("start_methods" = results[[2]]$start_methods,
+                        "actual_methods" = results[[2]]$actual_methods,
                         "mean_rmse" = results[[2]]$mean_rmse,
                         "std_rmse" = results[[2]]$std_rmse,
                         "mean_cor" = results[[2]]$mean_cor,
@@ -88,9 +95,9 @@ kssa_plot <- function(
     # Process validation and if all clear, ---> Plot
     if (type == "complete"){
       if (all(check) == TRUE){
-        plot <- ggplot(data = plot1, aes(x = stats::reorder(.data$actual_method, eval(parse(text = metric))), y = eval(parse(text = metric)), fill = .data$start_method)) +
+        plot <- ggplot(data = plot1, aes(x = stats::reorder(.data$actual_methods, eval(parse(text = metric))), y = eval(parse(text = metric)), fill = .data$start_methods)) +
           geom_boxplot()+
-          labs(title = "Complete plot", x = "Actual method", y = casefold(metric), fill = "Start method") +
+          labs(title = "Complete plot", x = "Actual methods", y = casefold(metric), fill = "Start methods") +
           theme_classic()
       }
       else {
@@ -100,14 +107,14 @@ kssa_plot <- function(
     }
     else if (type == "summary"){
       if (all(check) == TRUE){
-        plot <- ggplot(data = plot2, aes(x = stats::reorder(.data$actual_method, eval(parse(text = paste0('mean_',metric)))), y = eval(parse(text = paste0('mean_',metric))), fill = .data$start_method)) +
+        plot <- ggplot(data = plot2, aes(x = stats::reorder(.data$actual_methods, eval(parse(text = paste0('mean_',metric)))), y = eval(parse(text = paste0('mean_',metric))), fill = .data$start_methods)) +
           geom_bar(stat="identity", color="black",
                    position=position_dodge()) +
           geom_errorbar(aes(ymin=eval(parse(text = paste0('mean_',metric)))-eval(parse(text = paste0('std_',metric))),
                             ymax=eval(parse(text = paste0('mean_',metric)))+eval(parse(text = paste0('std_',metric)))),
                         width=.2,
                         position=position_dodge(.9)) +
-          labs(title = "Summary plot", x = "Actual method", y = casefold(metric)) +
+          labs(title = "Summary plot", x = "Actual methods", y = casefold(metric)) +
           theme_classic()
 
       }

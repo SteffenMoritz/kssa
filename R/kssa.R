@@ -1,33 +1,37 @@
 #' @title kssa Algorithm
 #'
 #' @description Run the Known Sub-Sequence Algorithm to compare imputation methods for time series data
-#' @param x_ts Time series object (ts) containing missing data (NA)
-#' @param start_methods The method or methods to start the algorithm.
-#'  It can be a string vector containing the following 11 iimputation methods
-#'
-#' \itemize{
-#'    \item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
-#'    "simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
-#'    "locf", "decomp")} (default choice) - or a subset of these
-#'    \item{set to "all" to start with all methods automatically} - Default choice
-#'    }
+#' @param x_ts Time series object \code{\link{ts}} containing missing data (NA)
 #'
 #' @param actual_methods The imputation methods to compare. It can be a string vector containing the following
 #'  11 imputation methods:
 #'
 #' \itemize{
-#'    \item{c("auto.arima", "StructTS", "linear_i", "spline_i", "stine_i",
-#'    "simple"_i, "simple_ma", "linear_ma", "exponential_ma", "seadec",
-#'    "locf", "decomp")} (default choice) - or a subset of these
-#'    \item{or "all" to compare among all methods automatically} - Default choice
+#'    \item{"all" - compare among all methods automatically - Default}
+#'    \item{"auto.arima" - State space representation of an ARIMA model}
+#'    \item{"StructTS" - State space representation of a structural model}
+#'    \item{"seadec" - Seasonal decomposition with Kalman smoothing}
+#'    \item{"linear_i" - simple linear interpolation}
+#'    \item{"spline_i" - spline interpolation}
+#'    \item{"stine_i" - Stineman interpolation}
+#'    \item{"simple_ma" - Stineman interpolation}
+#'    \item{"stine_i" - Stineman interpolation}
+#'    \item{"simple_ma" - Simple moving average}
+#'    \item{"linear_ma" - Linear moving average}
+#'    \item{"exponential_ma" - Exponential moving average}
+#'    \item{"locf" - Last observation carried forward}
+#'    \item{"stl" - Seasonal and trend decomposition with Loess}
 #'    }
 #'
 #'    For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}
 #'
-#' @param segments Into how many segments the time series will be divideds
-#' @param iterations How many iterations to run
-#' @param percentmd Percent of missing data. Must match with the true percentage of missing data in x_ts
-#' @param seed Random seed to choose (can be any number)
+#' @param start_methods String vector. The method or methods to start the algorithm.
+#'  Same as for actual_methods
+#'
+#' @param segments Integer. Into how many segments the time series will be divided
+#' @param iterations Integer. How many iterations to run
+#' @param percentmd Percentage of missing data. Must match with the true percentage of missing data in x_ts
+#' @param seed Numeric. Random seed to choose
 #' @return A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
 #' @references Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.
 #' \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}{Full text publication}.
@@ -52,8 +56,8 @@
 #' # input time series
 #'
 #' results_kssa = kssa(x_ts,
-#'                start_method = "all",
-#'                methods = "all",
+#'                start_methods = "all",
+#'                actual_methods = "all",
 #'                segments = 2,
 #'                iterations = 10,
 #'                percentmd = 0.2)
@@ -72,17 +76,19 @@
 #'
 
 
+
+
 kssa <- function(x_ts, # Time-series
-                 start_method, # Can select various
-                 methods, # Can select various or all
+                 start_methods, # Can select various
+                 actual_methods, # Can select various or all
                  segments, # Number of segments to ts be divided
                  iterations, # Replicate number
                  percentmd = sample(x = 1:50, size = 1)/100, # New Missing Data (MD) percentage in simulations
                  seed = 1234) { # Seed number
 
   results <- data.frame( # Create data frame where put the final results
-    "start_method" = as.character(),
-    "actual_method" = as.character(),
+    "start_methods" = as.character(),
+    "actual_methods" = as.character(),
     "percent_md" = numeric(),
     "rmse" = numeric(),
     "cor" = numeric(),
@@ -136,9 +142,9 @@ kssa <- function(x_ts, # Time-series
 
   # Generate df of imputation methods and formulas
   df_of_methods <- data.frame(
-    "methods" =c("auto.arima", "StructTS", "linear_i",
+    "actual_methods" =c("auto.arima", "StructTS", "linear_i",
                  "spline_i", "stine_i", "simple_ma", "linear_ma",
-                 "exponential_ma", "seadec", "locf", "decomp"),
+                 "exponential_ma", "seadec", "locf", "stl"),
     "formulas_x_ts" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
                         "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
                         "na_interpolation(x_ts,option='linear')",
@@ -163,32 +169,32 @@ kssa <- function(x_ts, # Time-series
                              "na.interp(newmdsimulation)")
   )
 
-  if(start_method == 'all'){ # Define 'all' statement
-    start_method <- c("auto.arima", "StructTS", "linear_i",
+  if(start_methods == 'all'){ # Define 'all' statement
+    start_methods <- c("auto.arima", "StructTS", "linear_i",
                       "spline_i", "stine_i", "simple_ma", "linear_ma",
-                      "exponential_ma", "seadec", "locf", "decomp")
+                      "exponential_ma", "seadec", "locf", "stl")
   } else {
-    start_method <- start_method
+    start_methods <- start_methods
   }
 
-  if(length(methods) == 1 && methods == 'all'){ # Define 'all' statement
-    methods <- c("auto.arima", "StructTS", "linear_i",
+  if(length(actual_methods) == 1 && actual_methods == 'all'){ # Define 'all' statement
+    actual_methods <- c("auto.arima", "StructTS", "linear_i",
                  "spline_i", "stine_i", "simple_ma", "linear_ma",
-                 "exponential_ma", "seadec", "locf", "decomp")
+                 "exponential_ma", "seadec", "locf", "stl")
   } else {
-    methods <- methods
+    actual_methods <- actual_methods
   }
 
   # Generate seeds from starting seed
   set.seed(seed); seeds <- sample(1:9999, iterations)
 
   # Check if start methods are in list of avaliable methods
-  check <- start_method %in% df_of_methods$methods
+  check <- start_methods %in% df_of_methods$actual_methods
 
   if (all(check) == TRUE){
-    for (i in 1:length(start_method)) {
+    for (i in 1:length(start_methods)) {
       # First imputation
-      set.seed(seed); first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == start_method[i]]))
+      set.seed(seed); first_imputed <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$actual_methods == start_methods[i]]))
 
       # Get MD original
       mdoriginal <- get_mdoriginal(x = x_ts, y = first_imputed)
@@ -197,13 +203,13 @@ kssa <- function(x_ts, # Time-series
         # Put new simulated MD
         set.seed(seeds[k]); newmdsimulation <- split_arbitrary(x = first_imputed, segments = segments, mdoriginal = mdoriginal)
         na_count <- sum(is.na(newmdsimulation))/length(newmdsimulation)
-        for (j in 1:length(methods)) {
+        for (j in 1:length(actual_methods)) {
           # Check if selected methods are in list of avaliable methods
-          check2 <- methods %in% df_of_methods$methods
+          check2 <- actual_methods %in% df_of_methods$actual_methods
 
           if (all(check) == TRUE){ # if all works correctly
             # Actual imputation
-            set.seed(seeds[k]); actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$methods == methods[j]]))#Here it goes good
+            set.seed(seeds[k]); actual_imputation <- eval(parse(text = df_of_methods$formulas_actual_ts[df_of_methods$actual_methods == actual_methods[j]]))#Here it goes good
 
             # Get scores
             rmse <- Metrics::rmse(coredata(first_imputed),coredata(actual_imputation))
@@ -212,8 +218,8 @@ kssa <- function(x_ts, # Time-series
             smape <- Metrics::smape(coredata(first_imputed),coredata(actual_imputation))
 
             # Storage scores temporarly
-            tempresults <- data.frame("start_method" = start_method[i],
-                                      "actual_method" = methods[j],
+            tempresults <- data.frame("start_methods" = start_methods[i],
+                                      "actual_methods" = actual_methods[j],
                                       "percent_md" = na_count,
                                       "rmse" = rmse,
                                       "cor" = cor,
@@ -226,9 +232,9 @@ kssa <- function(x_ts, # Time-series
           }
           else {
             print(paste0("The methods '",
-                         paste(as.character(methods[which(!check2)]),
+                         paste(as.character(actual_methods[which(!check2)]),
                                collapse = ", "),
-                         "' in actual_method parameter, are not in the list of available options"))
+                         "' in actual_methods parameter, are not in the list of available options"))
           }
         }
       }
@@ -238,12 +244,12 @@ kssa <- function(x_ts, # Time-series
     print(paste0("The methods '",
                  paste(as.character(start_method[which(!check)]),
                        collapse = ", "),
-                 "' in start_method parameter, are not in the list of available options"))
+                 "' in start_methods parameter, are not in the list of available options"))
   }
 
   # Create summary of results
   summary_results <- results %>%
-    group_by(.data$start_method, .data$actual_method) %>%
+    group_by(.data$start_methods, .data$actual_methods) %>%
     summarise(mean_na = mean(.data$percent_md),
               std_na = sd(.data$percent_md),
               mean_rmse = mean(.data$rmse),
@@ -258,7 +264,7 @@ kssa <- function(x_ts, # Time-series
 
   # Get the best configuration & imputate original
   best_result <- results[which.min(results[,3]),]
-  set.seed(seed); imputation <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$methods == best_result$actual_method]))
+  set.seed(seed); imputation <- eval(parse(text = df_of_methods$formulas_x_ts[df_of_methods$actual_methods == best_result$actual_methods]))
 
   # Configure results list
   results <- results[1:(length(results)-1)]

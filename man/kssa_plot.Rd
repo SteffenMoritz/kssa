@@ -12,14 +12,21 @@ kssa_plot(results, type, metric)
 \item{type}{A character value with the type of plot to show.
 It can be "summary" or "complete".}
 
-\item{metric}{A character with the performance metric to be plotted
+\item{metric}{A character with the performance metric to be plotted.
 It can be  "rmse", "mase," "cor", or "smape"
+
+\itemize{
+\item{"rmse" -  Root Mean Squared Error} (default choice)
+\item{"mase" - Mean Absolute Scaled Error}
+\item{"smape" - Symmetric Mean Absolute Percentage Error}
+\item{"cor" - Pearson correlation coefficient}
+}
 
 For further details on these metrics please check package \code{\link{Metrics}}}
 }
 \value{
-A plot of kssa results ordered from lower to higher (left to right)
-averaged error
+A plot of kssa results in which imputation methods are ordered
+from lower to higher (left to right) error.
 }
 \description{
 Function to plot the results of kssa for easy interpretation
@@ -38,8 +45,8 @@ x_ts = ts(x)
 # input time series
 
 results_kssa = kssa(x_ts,
-               start_method = "all",
-               methods = "all",
+               start_methods = "all",
+               actual_methods = "all",
                segments = 2,
                iterations = 10,
                percentmd = 0.2)
