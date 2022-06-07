@@ -24,7 +24,7 @@
 #'
 #'    For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}
 #'
-#' @param segments Into how many segments the time series will be divided
+#' @param segments Into how many segments the time series will be divideds
 #' @param iterations How many iterations to run
 #' @param percentmd Percent of missing data. Must match with the true percentage of missing data in x_ts
 #' @param seed Random seed to choose (can be any number)

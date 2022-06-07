@@ -66,7 +66,7 @@ kssa_plot <- function(
                               "mase" = results[[1]]$mase,
                               "smape"= results[[1]]$smape)
 
-    # Extract summary information from kssa.table object
+    # Extract summary information from kssa.table objects
     plot2 <- data.frame("start_method" = results[[2]]$start_method,
                         "actual_method" = results[[2]]$actual_method,
                         "mean_rmse" = results[[2]]$mean_rmse,

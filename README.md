@@ -18,7 +18,7 @@ library(devtools)
 install_github("SteffenMoritz/kssa")
 ```
 
-## Example
+## Examples
 
 # create a numeric vector with 20% missing data
 #' x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)

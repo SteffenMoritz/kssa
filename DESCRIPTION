@@ -12,7 +12,7 @@ Authors@R:
   )
 Maintainer: Iván Felipe Benavides <ibenavidesm@unal.edu.co>
 LazyData: yes
-Description: This package runs the Known Sub-Sequence Algorithm \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}, which helps to automatically compare, validate and identify the best methods for missing data imputation in time series. It compares the performance of 11 state-of-the-art imputation methods avaliable in packages \code{\link{imputeTS}} and \code{\link{forecast}} and delivers a best method suited for each particular time series
+Description: This package runs the Known Sub-Sequence Algorithm \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}, which helps to automatically compare, validate and identify the best methods for missing data imputation in time series. It compares the performance of 11 state-of-the-art's imputation methods avaliable in packages \code{\link{imputeTS}} and \code{\link{forecast}} and delivers a best method suited for each particular time series
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
