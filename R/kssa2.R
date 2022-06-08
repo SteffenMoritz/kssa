@@ -18,12 +18,12 @@
 #' @export
 
 kssa2 <- function(x_ts, # Time-series
-                 start_method, # Can select various
-                 methods, # Can select various or all
-                 segments, # Number of segments to ts be divided
-                 iterations, # Replicate number
-#                 percentmd = sample(x = 1:50, size = 1)/100, # New Missing Data (MD) percentage in simulations
-                 seed = 1234) { # Seed number
+                  start_method = 'all', # Can select various
+                  methods = 'all', # Can select various or all
+                  segments = 5, # Number of segments to ts be divided
+                  iterations = 10, # Replicate number
+                  #percentmd = 0.2, # New Missing Data (MD) percentage in simulations
+                  seed = 1234) { # Seed number
 
   results <- data.frame( # Create data frame where put the final results
     "start_method" = as.character(),
