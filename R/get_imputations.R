@@ -1,10 +1,11 @@
 #' @title get_imputations function
 #'
-#' @description Function to get imputation
-#' @param x_ts A ts object to be imputed
-#' @param method A character with method or methods types for imputation
+#' @description Function to get imputations from methods compared by kssa
+#' @param x_ts A ts object with missing data to be imputed
+#' @param method A string or string vector indicating the method or methods
+#' @param seed Numeric. Any number
 #'
-#' @return The imputated \code{x_ts}
+#' @return A list of imputed time series with the selected methods
 #'
 #' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
 #' @importFrom forecast na.interp
@@ -13,6 +14,18 @@
 #' @importFrom zoo coredata index
 #' @importFrom rlang .data
 #' @export
+#' @examples # Get imputed values for co2_na_ts with the methods of
+#' # your choice. Ideally those previously compared by kssa
+#'
+#' my.imputations = get_imputations(co2_na_ts, methods = "all")
+#'
+#' # my.imputations contains the imputed time series with all methods.
+#' # Access it and choose the one from the best method for your purposes
+#'
+#' my.imputations$seadec
+#' plot.ts(my.imputations$seadec)
+#'
+#'
 
 get_imputations <- function(
     x_ts, # Time-series
@@ -21,9 +34,9 @@ get_imputations <- function(
 ){
   # Generate df of imputation methods and formulas
   df_of_methods <- data.frame(
-    "methods" =c("auto.arima", "StructTS", "linear",
-                 "spline", "stine", "simple", "malinear",
-                 "exponential", "kalman", "nalocf", "decomp"),
+    "methods" =c("auto.arima", "StructTS", "linear_i",
+                 "spline_i", "stine_i", "simple_ma", "linear_ma",
+                 "exponential_ma", "seadec", "locf", "stl"),
     "formulas_x_ts" = c("na_kalman(x_ts,model='auto.arima',smooth = TRUE,nit = -1)",
                         "na_kalman(x_ts,model='StructTS',smooth = TRUE,nit = -1)",
                         "na_interpolation(x_ts,option='linear')",
@@ -49,9 +62,9 @@ get_imputations <- function(
   )
 
   if(length(methods) == 1 && methods == 'all'){ # Define 'all' statement
-    methods <- c("auto.arima", "StructTS", "linear",
-                 "spline", "stine", "simple", "malinear",
-                 "exponential", "kalman", "nalocf", "decomp")
+    methods <- c("auto.arima", "StructTS", "linear_i",
+                 "spline_i", "stine_i", "simple_ma", "linear_ma",
+                 "exponential_ma", "seadec", "locf", "stl")
   } else {
     methods <- methods
   }

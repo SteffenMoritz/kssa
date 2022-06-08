@@ -8,9 +8,9 @@ kssa(
   x_ts,
   start_methods,
   actual_methods,
-  segments,
-  iterations,
-  percentmd = sample(x = 1:50, size = 1)/100,
+  segments = 5,
+  iterations = 10,
+  percentmd = 0.2,
   seed = 1234
 )
 }
@@ -20,7 +20,7 @@ kssa(
 \item{start_methods}{String vector. The method or methods to start the algorithm.
 Same as for actual_methods}
 
-\item{actual_methods}{The imputation methods to compare. It can be a string vector containing the following
+\item{actual_methods}{The imputation methods to be compared and validated. It can be a string vector containing the following
 11 imputation methods:
 
 \itemize{
@@ -28,10 +28,8 @@ Same as for actual_methods}
 \item{"auto.arima" - State space representation of an ARIMA model}
 \item{"StructTS" - State space representation of a structural model}
 \item{"seadec" - Seasonal decomposition with Kalman smoothing}
-\item{"linear_i" - simple linear interpolation}
-\item{"spline_i" - spline interpolation}
-\item{"stine_i" - Stineman interpolation}
-\item{"simple_ma" - Stineman interpolation}
+\item{"linear_i" - Linear interpolation}
+\item{"spline_i" - Spline interpolation}
 \item{"stine_i" - Stineman interpolation}
 \item{"simple_ma" - Simple moving average}
 \item{"linear_ma" - Linear moving average}
@@ -46,7 +44,7 @@ For further details on these imputation methods please check packages \code{\lin
 
 \item{iterations}{Integer. How many iterations to run}
 
-\item{percentmd}{Percentage of missing data. Must match with the true percentage of missing data in x_ts}
+\item{percentmd}{Numeric. Percentage of missing data. Must match with the true percentage of missing data in x_ts}
 
 \item{seed}{Numeric. Random seed to choose}
 }
@@ -54,39 +52,36 @@ For further details on these imputation methods please check packages \code{\lin
 A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
 }
 \description{
-Run the Known Sub-Sequence Algorithm to compare imputation methods for time series data
+Run the Known Sub-Sequence Algorithm to compare the performance of imputation methods on a time series of interest
 }
 \examples{
-# create a numeric vector with 20\% missing data
-x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+# Create 20\% random missing data in co2 time series from R datasets
+set.seed(1234)
+co2_na =  missMethods:: delete_MCAR(as.data.frame(co2),0.2)
 
-# convert x to a time series object
-x_ts = ts(x)
+# Convert co2_na to time series object
+co2_na_ts = ts(co2_na,start = c(1959,1), end = c(1997,12), frequency = 12)
 
-# apply the kssa algorithm with 2 segments,
-# 10 iterations and 20\% of missing data.
+# Apply the kssa algorithm with 5 segments,
+# 10 iterations, 20\% of missing data, and
+# compare among all available methods in the package.
 # Remember that percentmd must match with
-# the real percentaje of missing data in the
-# input time series
+# the real percentage of missing data in the
+# input co2_na_ts time series
 
-results_kssa = kssa(x_ts,
+results_kssa = kssa(co2_na_ts,
                start_methods = "all",
                actual_methods = "all",
-               segments = 2,
+               segments = 5,
                iterations = 10,
                percentmd = 0.2)
 
-# print results
+# Print and check results
 results_kssa
 
-# plot complete results with Root Mean Squared Error for easy
-# interpretation
-kssa_plot(results_kssa, type = "complete", metric = "rmse")
+For an easy interpretation of kssa results
+please use function \code{\link{kssa_plot}}
 
-# Conclusion: Since the kssa_plot is ordered from lower to
-# higher (left to right) average error, the method
-# exponential_ma (exponential moving average) is
-# the best to impute missing data in x_tx.
 
 }
 \references{

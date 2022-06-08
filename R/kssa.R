@@ -1,9 +1,9 @@
 #' @title kssa Algorithm
 #'
-#' @description Run the Known Sub-Sequence Algorithm to compare imputation methods for time series data
+#' @description Run the Known Sub-Sequence Algorithm to compare the performance of imputation methods on a time series of interest
 #' @param x_ts Time series object \code{\link{ts}} containing missing data (NA)
 #'
-#' @param actual_methods The imputation methods to compare. It can be a string vector containing the following
+#' @param actual_methods The imputation methods to be compared and validated. It can be a string vector containing the following
 #'  11 imputation methods:
 #'
 #' \itemize{
@@ -11,10 +11,8 @@
 #'    \item{"auto.arima" - State space representation of an ARIMA model}
 #'    \item{"StructTS" - State space representation of a structural model}
 #'    \item{"seadec" - Seasonal decomposition with Kalman smoothing}
-#'    \item{"linear_i" - simple linear interpolation}
-#'    \item{"spline_i" - spline interpolation}
-#'    \item{"stine_i" - Stineman interpolation}
-#'    \item{"simple_ma" - Stineman interpolation}
+#'    \item{"linear_i" - Linear interpolation}
+#'    \item{"spline_i" - Spline interpolation}
 #'    \item{"stine_i" - Stineman interpolation}
 #'    \item{"simple_ma" - Simple moving average}
 #'    \item{"linear_ma" - Linear moving average}
@@ -30,7 +28,7 @@
 #'
 #' @param segments Integer. Into how many segments the time series will be divided
 #' @param iterations Integer. How many iterations to run
-#' @param percentmd Percentage of missing data. Must match with the true percentage of missing data in x_ts
+#' @param percentmd Numeric. Percentage of missing data. Must match with the true percentage of missing data in x_ts
 #' @param seed Numeric. Random seed to choose
 #' @return A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
 #' @references Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.
@@ -38,43 +36,40 @@
 #'
 #' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
 #' @importFrom forecast na.interp
+#' @importFrom missMethods delete_MCAR
 #' @importFrom stats sd cor ts window
 #' @importFrom Metrics rmse mase mape smape
 #' @importFrom zoo coredata index
 #' @importFrom rlang .data
 #' @export
-#' @examples # create a numeric vector with 20% missing data
-#' x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+#' @examples # Create 20% random missing data in co2 time series from R datasets
+#' set.seed(1234)
+#' co2_na =  missMethods:: delete_MCAR(as.data.frame(co2),0.2)
 #'
-#' # convert x to a time series object
-#' x_ts = ts(x)
+#' # Convert co2_na to time series object
+#' co2_na_ts = ts(co2_na,start = c(1959,1), end = c(1997,12), frequency = 12)
 #'
-#' # apply the kssa algorithm with 2 segments,
-#' # 10 iterations and 20% of missing data.
+#' # Apply the kssa algorithm with 5 segments,
+#' # 10 iterations, 20% of missing data, and
+#' # compare among all available methods in the package.
 #' # Remember that percentmd must match with
-#' # the real percentaje of missing data in the
-#' # input time series
+#' # the real percentage of missing data in the
+#' # input co2_na_ts time series
 #'
-#' results_kssa = kssa(x_ts,
+#' results_kssa = kssa(co2_na_ts,
 #'                start_methods = "all",
 #'                actual_methods = "all",
-#'                segments = 2,
+#'                segments = 5,
 #'                iterations = 10,
 #'                percentmd = 0.2)
 #'
-#' # print results
+#' # Print and check results
 #' results_kssa
 #'
-#' # plot complete results with Root Mean Squared Error for easy
-#' # interpretation
-#' kssa_plot(results_kssa, type = "complete", metric = "rmse")
+#' For an easy interpretation of kssa results
+#' please use function \code{\link{kssa_plot}}
 #'
-#' # Conclusion: Since the kssa_plot is ordered from lower to
-#' # higher (left to right) average error, the method
-#' # exponential_ma (exponential moving average) is
-#' # the best to impute missing data in x_tx.
 #'
-
 
 
 
@@ -278,4 +273,6 @@ kssa <- function(x_ts, # Time-series
 
   list_results <- list(results, summary_results, results_df, summary_results_df, ts(imputation))
   return(list_results)
+
+
 }

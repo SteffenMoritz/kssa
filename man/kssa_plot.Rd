@@ -7,7 +7,7 @@
 kssa_plot(results, type, metric)
 }
 \arguments{
-\item{results}{A list object with results produced with function \code{\link{kssa}}}
+\item{results}{An object with results produced with function \code{\link{kssa}}}
 
 \item{type}{A character value with the type of plot to show.
 It can be "summary" or "complete".}
@@ -32,35 +32,15 @@ from lower to higher (left to right) error.
 Function to plot the results of kssa for easy interpretation
 }
 \examples{
-# create a numeric vector with 20\% missing data
-x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+# Plot the results obtained in the example from function kssa
 
-# convert x to a time series object
-x_ts = ts(x)
-
-# apply the kssa algorithm with 2 segments,
-# 10 iterations and 20\% of missing data.
-# Remember that percentmd must match with
-# the real percentaje of missing data in the
-# input time series
-
-results_kssa = kssa(x_ts,
-               start_methods = "all",
-               actual_methods = "all",
-               segments = 2,
-               iterations = 10,
-               percentmd = 0.2)
-
-# print results
-results_kssa
-
-# plot complete results with Root Mean Squared Error for easy
-# interpretation
 kssa_plot(results_kssa, type = "complete", metric = "rmse")
 
-# Conclusion: Since the kssa_plot is ordered from lower to
-# higher (left to right) average error, the method
-# exponential_ma (exponential moving average) is
-# the best to impute missing data in x_tx.
+# Conclusion: Since kssa_plot is ordered from lower to
+# higher error (left to right), method 'seadec' is the best to
+# impute missing data in co2_na_ts. Notice that method 'locf' is the worst
+
+To obtain imputations with the best method, or any method of preference
+please use function \code{\link{get_imputations}}
 
 }

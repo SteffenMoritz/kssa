@@ -5,7 +5,7 @@ Authors@R:
       c(
   person("Ivan-Felipe", "Benavides", email="ibenavidesm@unal.edu.co", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-1139-3909")),
   person("Steffen", "Moritz", email="steffen.moritz10@gmail.com", role=c("aut"), comment = c(ORCID = "0000-0002-0085-1804")),
-  person("Brayan", "Aroca", email = "bdarocag.consultor@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-7365-5740")),
+  person("Brayan-David", "Aroca-Gonzalez", email = "bdarocag.consultor@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-7365-5740")),
   person("Jhoana", "Romero", email = "jpatirom3@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-1834-3461")),
   person("Marlon", "Santacruz", email = "marlonestebansv88@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0003-2242-742X")),
   person("John-Josephraj", "Selvaraj", email = "jojselvaraj@unal.edu.co", role = c("aut"), comment = c(ORCID = "0000-0002-9195-4883"))
