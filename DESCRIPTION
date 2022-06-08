@@ -1,16 +1,23 @@
 Package: kssa
-Title: Validates the performance of imputation methods for univariate time series
+Title: Known Sub-Sequence Algorithm
 Version: 0.0.1
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+      c(
+  person("Ivan-Felipe", "Benavides", email="ibenavidesm@unal.edu.co", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-1139-3909")),
+  person("Steffen", "Moritz", email="steffen.moritz10@gmail.com", role=c("aut"), comment = c(ORCID = "0000-0002-0085-1804")),
+  person("Brayan", "Aroca", email = "bdarocag.consultor@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-7365-5740")),
+  person("Jhoana", "Romero", email = "jpatirom3@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-1834-3461")),
+  person("Marlon", "Santacruz", email = "marlonestebansv88@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0003-2242-742X")),
+  person("John-Josephraj", "Selvaraj", email = "jojselvaraj@unal.edu.co", role = c("aut"), comment = c(ORCID = "0000-0002-9195-4883"))
+  )
+Maintainer: Iván Felipe Benavides <ibenavidesm@unal.edu.co>
 LazyData: yes
-Description: What the package does (one paragraph).
+Description: This package runs the Known Sub-Sequence Algorithm \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}, which helps to automatically compare, validate and identify the best methods for missing data imputation in time series. It compares the performance of 11 state-of-the-art's imputation methods avaliable in packages \code{\link{imputeTS}} and \code{\link{forecast}} and delivers a best method suited for each particular time series
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
-URL: https://github.com/SteffenMoritz/kssa,
+RoxygenNote: 7.2.0
+URL: https://github.com/pipeben/kssa,
     https://steffenmoritz.github.io/kssa/
 BugReports: https://github.com/SteffenMoritz/kssa/issues
 Depends:
@@ -29,3 +36,4 @@ Imports:
     zoo,
     Metrics,
     dplyr
+Date: 2022-06-07   

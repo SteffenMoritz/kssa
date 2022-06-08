@@ -18,12 +18,40 @@ library(devtools)
 install_github("SteffenMoritz/kssa")
 ```
 
-## Example
+## Examples
 
-This is a basic example which shows you how to solve a common problem:
+# create a numeric vector with 20% missing data
+#' x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+#'
+#' # convert x to a time series object
+#' x_ts = ts(x)
+#'
+#' # apply the kssa algorithm with 2 segments,
+#' # 10 iterations and 20% of missing data.
+#' # Remember that percentmd must match with
+#' # the real percentaje of missing data in the
+#' # input time series
+#'
+#' results_kssa = kssa(x_ts,
+#'                start_method = "all",
+#'                methods = "all",
+#'                segments = 2,
+#'                iterations = 10,
+#'                percentmd = 0.2)
+#'
+#' # print results
+#' results_kssa
+#'
+#' # plot complete results with Root Mean Squared Error for easy
+#' # interpretation
+#' kssa_plot(results_kssa, type = "complete", metric = "rmse")
+#'
+#' # Conclusion: Since the kssa_plot is ordered from lower to
+#' # higher (left to right) average error, the method
+#' # exponential_ma (exponential moving average) is
+#' # the best to impute missing data in x_tx.
+#'
 
-TEST TEST TEST FELIPE
-TEST TEST TEST FELIPE2
 
 ``` r
 library(kssa)

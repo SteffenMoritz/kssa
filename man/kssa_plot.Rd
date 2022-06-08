@@ -7,15 +7,60 @@
 kssa_plot(results, type, metric)
 }
 \arguments{
-\item{results}{A list object with kssa.table objects}
+\item{results}{A list object with results produced with function \code{\link{kssa}}}
 
-\item{type}{A character with type of plot complete or summary}
+\item{type}{A character value with the type of plot to show.
+It can be "summary" or "complete".}
 
-\item{metric}{A character with metric choosed to be plot}
+\item{metric}{A character with the performance metric to be plotted.
+It can be  "rmse", "mase," "cor", or "smape"
+
+\itemize{
+\item{"rmse" -  Root Mean Squared Error} (default choice)
+\item{"mase" - Mean Absolute Scaled Error}
+\item{"smape" - Symmetric Mean Absolute Percentage Error}
+\item{"cor" - Pearson correlation coefficient}
+}
+
+For further details on these metrics please check package \code{\link{Metrics}}}
 }
 \value{
-The plot of \code{results}
+A plot of kssa results in which imputation methods are ordered
+from lower to higher (left to right) error.
 }
 \description{
-Function to plot kssa results
+Function to plot the results of kssa for easy interpretation
+}
+\examples{
+# create a numeric vector with 20\% missing data
+x = c(1, 5, 6, 8, 4, NA, 5, 4, NA, NA)
+
+# convert x to a time series object
+x_ts = ts(x)
+
+# apply the kssa algorithm with 2 segments,
+# 10 iterations and 20\% of missing data.
+# Remember that percentmd must match with
+# the real percentaje of missing data in the
+# input time series
+
+results_kssa = kssa(x_ts,
+               start_methods = "all",
+               actual_methods = "all",
+               segments = 2,
+               iterations = 10,
+               percentmd = 0.2)
+
+# print results
+results_kssa
+
+# plot complete results with Root Mean Squared Error for easy
+# interpretation
+kssa_plot(results_kssa, type = "complete", metric = "rmse")
+
+# Conclusion: Since the kssa_plot is ordered from lower to
+# higher (left to right) average error, the method
+# exponential_ma (exponential moving average) is
+# the best to impute missing data in x_tx.
+
 }
