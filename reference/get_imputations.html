@@ -79,7 +79,8 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Get imputed values for airgap_na_ts with the methods of</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
+<span class="r-in"><span class="co"># Get imputed values for airgap_na_ts with the methods of</span></span>
 <span class="r-in"><span class="co"># Create 20% random missing data in tsAirgapComplete time series from imputeTS</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/SteffenMoritz/imputeTS" class="external-link">"imputeTS"</a></span><span class="op">)</span></span>
@@ -177,6 +178,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1997 184.0000 162.0000 146.0000 166.0000</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/plot.ts.html" class="external-link">plot.ts</a></span><span class="op">(</span><span class="va">my_imputations</span><span class="op">$</span><span class="va">seadec</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="get_imputations-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
