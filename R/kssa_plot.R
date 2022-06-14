@@ -67,7 +67,7 @@ kssa_plot <- function(results, # results object from apply kssa function
                       metric # if type == complete put any metric like rmse, cor, mase, smape
 ) {
   # First condition with kssa.object
-  if (class(results[[1]]) == "kssa.table" & class(results[[2]]) == "kssa.table") {
+  if (is(results[[1]],"kssa.table") & is(results[[2]],"kssa.table")) {
 
     # Extract complete data from kssa.tables object
     plot1 <- data.frame(
