@@ -20,6 +20,7 @@ A list of imputed time series with the selected methods
 Function to get imputations from methods compared by kssa
 }
 \examples{
+\donttest{
 # Get imputed values for airgap_na_ts with the methods of
 # Create 20\% random missing data in tsAirgapComplete time series from imputeTS
 set.seed(1234)
@@ -37,4 +38,6 @@ my_imputations <- get_imputations(airgap_na_ts, methods = "all")
 
 my_imputations$seadec
 plot.ts(my_imputations$seadec)
+}
+
 }

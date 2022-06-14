@@ -55,6 +55,7 @@ A list of results to be plotted with function \code{\link{kssa_plot}} for easy i
 Run the Known Sub-Sequence Algorithm to compare the performance of imputation methods on a time series of interest
 }
 \examples{
+\donttest{
 # Create 20\% random missing data in tsAirgapComplete time series from imputeTS
 set.seed(1234)
 library("kssa")
@@ -84,6 +85,8 @@ results_kssa
 
 # For an easy interpretation of kssa results
 # please use function kssa_plot
+}
+
 }
 \references{
 Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.

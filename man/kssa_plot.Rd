@@ -32,7 +32,7 @@ from lower to higher (left to right) error.
 Function to plot the results of kssa for easy interpretation
 }
 \examples{
-
+\donttest{
 # Plot the results obtained in the example from function kssa
 
 # Create 20\% random missing data in tsAirgapComplete time series from imputeTS
@@ -67,4 +67,6 @@ kssa_plot(results_kssa, type = "complete", metric = "rmse")
 
 # To obtain imputations with the best method, or any method of preference
 # please use function get_imputations
+}
+
 }

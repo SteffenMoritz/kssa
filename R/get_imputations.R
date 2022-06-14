@@ -7,14 +7,8 @@
 #'
 #' @return A list of imputed time series with the selected methods
 #'
-#' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
-#' @importFrom forecast na.interp
-#' @importFrom stats sd cor ts window
-#' @importFrom Metrics rmse mase mape smape
-#' @importFrom zoo coredata index
-#' @importFrom rlang .data
-#' @export
 #' @examples
+#' \donttest{
 #' # Get imputed values for airgap_na_ts with the methods of
 #' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
 #' set.seed(1234)
@@ -32,6 +26,16 @@
 #'
 #' my_imputations$seadec
 #' plot.ts(my_imputations$seadec)
+#' }
+#'
+#' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
+#' @importFrom forecast na.interp
+#' @importFrom stats sd cor ts window
+#' @importFrom Metrics rmse mase mape smape
+#' @importFrom zoo coredata index
+#' @importFrom rlang .data
+#' @export
+
 get_imputations <- function(x_ts, # Time-series
                             methods = "all", # Can select various or all
                             seed = 1234) {

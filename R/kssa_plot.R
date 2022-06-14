@@ -21,7 +21,7 @@
 #' from lower to higher (left to right) error.
 #'
 #' @examples
-#'
+#' \donttest{
 #' # Plot the results obtained in the example from function kssa
 #'
 #' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
@@ -56,6 +56,8 @@
 #'
 #' # To obtain imputations with the best method, or any method of preference
 #' # please use function get_imputations
+#' }
+#'
 #' @import ggplot2
 #' @import dplyr
 #' @importFrom stats reorder

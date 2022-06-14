@@ -34,15 +34,8 @@
 #' @references Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.
 #' \href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}{Full text publication}.
 #'
-#' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
-#' @importFrom forecast na.interp
-#' @importFrom missMethods delete_MCAR
-#' @importFrom stats sd cor ts window
-#' @importFrom Metrics rmse mase mape smape
-#' @importFrom zoo coredata index
-#' @importFrom rlang .data
-#' @export
 #' @examples
+#' \donttest{
 #' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
 #' set.seed(1234)
 #' library("kssa")
@@ -72,6 +65,17 @@
 #'
 #' # For an easy interpretation of kssa results
 #' # please use function kssa_plot
+#' }
+#'
+#' @importFrom imputeTS na_kalman na_interpolation na_ma na_seadec na_locf
+#' @importFrom forecast na.interp
+#' @importFrom missMethods delete_MCAR
+#' @importFrom stats sd cor ts window
+#' @importFrom Metrics rmse mase mape smape
+#' @importFrom zoo coredata index
+#' @importFrom rlang .data
+#' @export
+
 kssa <- function(x_ts, # Time-series
                  start_methods, # Can select various
                  actual_methods, # Can select various or all
