@@ -4,20 +4,27 @@
 \alias{kssa2}
 \title{kssa2 Algorithm}
 \usage{
-kssa2(x_ts, start_method, methods, segments, iterations, seed = 1234)
+kssa2(
+  x_ts,
+  start_methods = "all",
+  actual_methods = "all",
+  segments = 5,
+  iterations = 10,
+  seed = 1234
+)
 }
 \arguments{
 \item{x_ts}{The input time series}
 
-\item{start_method}{The starting method for the algorithm}
-
-\item{methods}{The methods that shall be compared}
+\item{start_methods}{The starting method for the algorithm}
 
 \item{segments}{Into how many segments the dataset shall be divided}
 
 \item{iterations}{How many iterations to run}
 
 \item{seed}{Seed to choose}
+
+\item{methods}{The methods that shall be compared}
 }
 \value{
 The sum of \code{x} and \code{y}

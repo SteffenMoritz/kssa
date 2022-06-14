@@ -7,15 +7,40 @@
 kssa_plot(results, type, metric)
 }
 \arguments{
-\item{results}{A list object with kssa.table objects}
+\item{results}{An object with results produced with function \code{\link{kssa}}}
 
-\item{type}{A character with type of plot complete or summary}
+\item{type}{A character value with the type of plot to show.
+It can be "summary" or "complete".}
 
-\item{metric}{A character with metric choosed to be plot}
+\item{metric}{A character with the performance metric to be plotted.
+It can be  "rmse", "mase," "cor", or "smape"
+
+\itemize{
+\item{"rmse" -  Root Mean Squared Error} (default choice)
+\item{"mase" - Mean Absolute Scaled Error}
+\item{"smape" - Symmetric Mean Absolute Percentage Error}
+\item{"cor" - Pearson correlation coefficient}
+}
+
+For further details on these metrics please check package \code{\link{Metrics}}}
 }
 \value{
-The plot of \code{results}
+A plot of kssa results in which imputation methods are ordered
+from lower to higher (left to right) error.
 }
 \description{
-Function to plot kssa results
+Function to plot the results of kssa for easy interpretation
+}
+\examples{
+# Plot the results obtained in the example from function kssa
+
+kssa_plot(results_kssa, type = "complete", metric = "rmse")
+
+# Conclusion: Since kssa_plot is ordered from lower to
+# higher error (left to right), method 'seadec' is the best to
+# impute missing data in co2_na_ts. Notice that method 'locf' is the worst
+
+To obtain imputations with the best method, or any method of preference
+please use function \code{\link{get_imputations}}
+
 }

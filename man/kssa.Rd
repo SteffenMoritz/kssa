@@ -6,35 +6,85 @@
 \usage{
 kssa(
   x_ts,
-  start_method,
-  methods,
-  segments,
-  iterations,
-  percentmd = sample(x = 1:50, size = 1)/100,
+  start_methods,
+  actual_methods,
+  segments = 5,
+  iterations = 10,
+  percentmd = 0.2,
   seed = 1234
 )
 }
 \arguments{
-\item{x_ts}{time series object (ts) containing missing data (NA)}
+\item{x_ts}{Time series object \code{\link{ts}} containing missing data (NA)}
 
-\item{start_method}{The starting method for the algorithm}
+\item{start_methods}{String vector. The method or methods to start the algorithm.
+Same as for actual_methods}
 
-\item{methods}{actual.methods    A string vector containing the following
-methods: c(“auto.arima”, “StructTS”, “linear”, “spline”, “stine”,
-“simple”, “malinear”, “exponential”, “kalman”, “nalocf”, “decomp”) .
-“all”    compares among all imputation methods}
+\item{actual_methods}{The imputation methods to be compared and validated. It can be a string vector containing the following
+11 imputation methods:
 
-\item{segments}{Into how many segments the dataset shall be divided}
+\itemize{
+\item{"all" - compare among all methods automatically - Default}
+\item{"auto.arima" - State space representation of an ARIMA model}
+\item{"StructTS" - State space representation of a structural model}
+\item{"seadec" - Seasonal decomposition with Kalman smoothing}
+\item{"linear_i" - Linear interpolation}
+\item{"spline_i" - Spline interpolation}
+\item{"stine_i" - Stineman interpolation}
+\item{"simple_ma" - Simple moving average}
+\item{"linear_ma" - Linear moving average}
+\item{"exponential_ma" - Exponential moving average}
+\item{"locf" - Last observation carried forward}
+\item{"stl" - Seasonal and trend decomposition with Loess}
+}
 
-\item{iterations}{How many iterations to run}
+For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}}
 
-\item{percentmd}{Percent of missing data}
+\item{segments}{Integer. Into how many segments the time series will be divided}
 
-\item{seed}{Seed to choose}
+\item{iterations}{Integer. How many iterations to run}
+
+\item{percentmd}{Numeric. Percentage of missing data. Must match with the true percentage of missing data in x_ts}
+
+\item{seed}{Numeric. Random seed to choose}
 }
 \value{
-The sum of \code{x} and \code{y}
+A list of results to be plotted with function \code{\link{kssa_plot}} for easy interpretation
 }
 \description{
-Function to add two numbers
+Run the Known Sub-Sequence Algorithm to compare the performance of imputation methods on a time series of interest
+}
+\examples{
+# Create 20\% random missing data in co2 time series from R datasets
+set.seed(1234)
+co2_na =  missMethods:: delete_MCAR(as.data.frame(co2),0.2)
+
+# Convert co2_na to time series object
+co2_na_ts = ts(co2_na,start = c(1959,1), end = c(1997,12), frequency = 12)
+
+# Apply the kssa algorithm with 5 segments,
+# 10 iterations, 20\% of missing data, and
+# compare among all available methods in the package.
+# Remember that percentmd must match with
+# the real percentage of missing data in the
+# input co2_na_ts time series
+
+results_kssa = kssa(co2_na_ts,
+               start_methods = "all",
+               actual_methods = "all",
+               segments = 5,
+               iterations = 10,
+               percentmd = 0.2)
+
+# Print and check results
+results_kssa
+
+For an easy interpretation of kssa results
+please use function \code{\link{kssa_plot}}
+
+
+}
+\references{
+Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.
+\href{https://www.sciencedirect.com/science/article/pii/S2468550X21001696}{Full text publication}.
 }
