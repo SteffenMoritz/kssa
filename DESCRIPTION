@@ -3,16 +3,15 @@ Title: Known Sub-Sequence Algorithm
 Version: 0.0.1
 Authors@R: 
       c(
-  person("Ivan-Felipe", "Benavides", email="ibenavidesm@unal.edu.co", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-1139-3909")),
+  person("Iván Felipe", "Benavides", email="pipeben@gmail.com", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-1139-3909")),
   person("Steffen", "Moritz", email="steffen.moritz10@gmail.com", role=c("aut"), comment = c(ORCID = "0000-0002-0085-1804")),
   person("Brayan-David", "Aroca-Gonzalez", email = "bdarocag.consultor@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-7365-5740")),
   person("Jhoana", "Romero", email = "jpatirom3@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0002-1834-3461")),
   person("Marlon", "Santacruz", email = "marlonestebansv88@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0003-2242-742X")),
   person("John-Josephraj", "Selvaraj", email = "jojselvaraj@unal.edu.co", role = c("aut"), comment = c(ORCID = "0000-0002-9195-4883"))
   )
-Maintainer: Iván Felipe Benavides <ibenavidesm@unal.edu.co>
-LazyData: yes
-Description: This package implements the Known Sub-Sequence Algorithm <doi: 10.1016/j.aaf.2021.12.013> which helps to automatically compare, validate and identify the best methods for missing data imputation in time series. It compares the performance of 11 state-of-the-art's imputation methods avaliable from multiple CRAN packages and delivers a best method suited for each particular time series.
+Maintainer: Iván Felipe Benavides <pipeben@gmail.com>
+Description: Implements the Known Sub-Sequence Algorithm <doi: 10.1016/j.aaf.2021.12.013> which helps to automatically compare, validate and identify the best methods for missing data imputation in time series. It compares the performance of 11 state-of-the-art's imputation methods available from multiple packages and delivers a best method suited for each particular time series.
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
