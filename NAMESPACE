@@ -3,7 +3,6 @@
 export("%>%")
 export(get_imputations)
 export(kssa)
-export(kssa2)
 export(kssa_plot)
 import(dplyr)
 import(ggplot2)

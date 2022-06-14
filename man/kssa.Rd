@@ -55,12 +55,14 @@ A list of results to be plotted with function \code{\link{kssa_plot}} for easy i
 Run the Known Sub-Sequence Algorithm to compare the performance of imputation methods on a time series of interest
 }
 \examples{
-# Create 20\% random missing data in co2 time series from R datasets
+# Create 20\% random missing data in tsAirgapComplete time series from imputeTS
 set.seed(1234)
-co2_na =  missMethods:: delete_MCAR(as.data.frame(co2),0.2)
+library("kssa")
+library("imputeTS")
+airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
 
 # Convert co2_na to time series object
-co2_na_ts = ts(co2_na,start = c(1959,1), end = c(1997,12), frequency = 12)
+airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
 
 # Apply the kssa algorithm with 5 segments,
 # 10 iterations, 20\% of missing data, and
@@ -69,20 +71,19 @@ co2_na_ts = ts(co2_na,start = c(1959,1), end = c(1997,12), frequency = 12)
 # the real percentage of missing data in the
 # input co2_na_ts time series
 
-results_kssa = kssa(co2_na_ts,
-               start_methods = "all",
-               actual_methods = "all",
-               segments = 5,
-               iterations = 10,
-               percentmd = 0.2)
+results_kssa <- kssa(airgap_na_ts,
+  start_methods = "all",
+  actual_methods = "all",
+  segments = 5,
+  iterations = 10,
+  percentmd = 0.2
+)
 
 # Print and check results
 results_kssa
 
-For an easy interpretation of kssa results
-please use function \code{\link{kssa_plot}}
-
-
+# For an easy interpretation of kssa results
+# please use function kssa_plot
 }
 \references{
 Benavides, I. F., Santacruz, M., Romero-Leiton, J. P., Barreto, C., & Selvaraj, J. J. (2022). Assessing methods for multiple imputation of systematic missing data in marine fisheries time series with a new validation algorithm. Aquaculture and Fisheries.

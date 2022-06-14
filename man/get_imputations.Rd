@@ -9,9 +9,9 @@ get_imputations(x_ts, methods = "all", seed = 1234)
 \arguments{
 \item{x_ts}{A ts object with missing data to be imputed}
 
-\item{seed}{Numeric. Any number}
+\item{methods}{A string or string vector indicating the method or methods}
 
-\item{method}{A string or string vector indicating the method or methods}
+\item{seed}{Numeric. Any number}
 }
 \value{
 A list of imputed time series with the selected methods
@@ -20,16 +20,21 @@ A list of imputed time series with the selected methods
 Function to get imputations from methods compared by kssa
 }
 \examples{
-# Get imputed values for co2_na_ts with the methods of
-# your choice. Ideally those previously compared by kssa
+# Get imputed values for airgap_na_ts with the methods of
+# Create 20\% random missing data in tsAirgapComplete time series from imputeTS
+set.seed(1234)
+library("imputeTS")
+library("kssa")
+airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
 
-my.imputations = get_imputations(co2_na_ts, methods = "all")
+# Convert co2_na to time series object
+airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
 
-# my.imputations contains the imputed time series with all methods.
+my_imputations <- get_imputations(airgap_na_ts, methods = "all")
+
+# my_imputations contains the imputed time series with all methods.
 # Access it and choose the one from the best method for your purposes
 
-my.imputations$seadec
-plot.ts(my.imputations$seadec)
-
-
+my_imputations$seadec
+plot.ts(my_imputations$seadec)
 }
