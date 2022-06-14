@@ -60,6 +60,7 @@
 #' @import dplyr
 #' @importFrom stats reorder
 #' @importFrom ggplot2 .data
+#' @importFrom methods is
 #' @export
 
 kssa_plot <- function(results, # results object from apply kssa function

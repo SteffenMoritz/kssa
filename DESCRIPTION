@@ -28,6 +28,7 @@ Imports:
     magrittr,
     ggplot2,
     rlang,
+    methods,
     forecast,
     imputeTS,
     stats,
