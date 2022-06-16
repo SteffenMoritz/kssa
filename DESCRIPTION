@@ -11,7 +11,7 @@ Authors@R:
   person("John-Josephraj", "Selvaraj", email = "jojselvaraj@unal.edu.co", role = c("aut"), comment = c(ORCID = "0000-0002-9195-4883"))
   )
 Maintainer: Iván Felipe Benavides <pipeben@gmail.com>
-Description: Implements the Known Sub-Sequence Algorithm <doi: 10.1016/j.aaf.2021.12.013>, which helps to automatically identify and validate the best method for missing data imputation in a time series. Supports the comparison of multiple state-of-the-art algorithms.
+Description: Implements the Known Sub-Sequence Algorithm <doi:10.1016/j.aaf.2021.12.013>, which helps to automatically identify and validate the best method for missing data imputation in a time series. Supports the comparison of multiple state-of-the-art algorithms.
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

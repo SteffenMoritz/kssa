@@ -246,7 +246,7 @@ kssa <- function(x_ts, # Time-series
             results <- bind_rows(results, tempresults)
           }
           else {
-            print(paste0(
+            warning(paste0(
               "The methods '",
               paste(as.character(actual_methods[which(!check2)]),
                 collapse = ", "
@@ -259,7 +259,7 @@ kssa <- function(x_ts, # Time-series
     }
   }
   else {
-    print(paste0(
+    warning(paste0(
       "The methods '",
       paste(as.character(start_methods[which(!check)]),
         collapse = ", "

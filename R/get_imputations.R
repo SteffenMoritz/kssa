@@ -97,7 +97,7 @@ get_imputations <- function(x_ts, # Time-series
     names(results) <- methods
     return(results)
   } else {
-    print(paste0(
+    warning(paste0(
       "The methods '",
       paste(as.character(methods[which(!check)]),
         collapse = ", "
