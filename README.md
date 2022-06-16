@@ -62,7 +62,7 @@ To obtain imputations with the best method, or any method of preference
 use function get_imputations().
 
 ## Reference
-You can cite imputeTS the following: 
+You can cite kssa the following: 
 
   > Ivan-Felipe Benavides, Steffen Moritz, Brayan-David Aroca-Gonzalez, Jhoana
   Romero, Marlon Santacruz and John-Josephraj Selvaraj (2022). kssa: Known
