@@ -21,7 +21,7 @@ kssa(
 Same as for actual_methods}
 
 \item{actual_methods}{The imputation methods to be compared and validated. It can be a string vector containing the following
-11 imputation methods:
+You can choose between the following:
 
 \itemize{
 \item{"all" - compare among all methods automatically - Default}
@@ -56,21 +56,22 @@ Run the Known Sub-Sequence Algorithm to compare the performance of imputation me
 }
 \examples{
 \donttest{
-# Create 20\% random missing data in tsAirgapComplete time series from imputeTS
-set.seed(1234)
+
+# Example 1: Compare all imputation methods
+
 library("kssa")
 library("imputeTS")
+
+# Create 20\% random missing data in tsAirgapComplete time series from imputeTS
 airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
 
-# Convert co2_na to time series object
+# Convert to time series object
 airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
 
-# Apply the kssa algorithm with 5 segments,
-# 10 iterations, 20\% of missing data, and
+# Apply the kssa algorithm with 5 segments, 10 iterations, 20\% of missing data,
 # compare among all available methods in the package.
 # Remember that percentmd must match with
-# the real percentage of missing data in the
-# input co2_na_ts time series
+# the real percentage of missing data in the input time series
 
 results_kssa <- kssa(airgap_na_ts,
   start_methods = "all",
@@ -86,6 +87,38 @@ results_kssa
 # For an easy interpretation of kssa results
 # please use function kssa_plot
 }
+
+
+
+# Example 2: Compare only locf and linear imputation
+
+library("kssa")
+library("imputeTS")
+
+# Create 20\% random missing data in tsAirgapComplete time series from imputeTS
+airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
+
+# Convert to time series object
+airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
+
+# Apply the kssa algorithm with 5 segments, 10 iterations, 20\% of missing data,
+# compare among all applied methods (locf and linear interpolation).
+# Remember that percentmd must match with
+# the real percentage of missing data in the input time series
+
+results_kssa <- kssa(airgap_na_ts,
+  start_methods = c("locf", "linear_i"),
+  actual_methods = c("locf", "linear_i"),
+  segments = 5,
+  iterations = 10,
+  percentmd = 0.2
+)
+
+# Print and check results
+results_kssa
+
+# For an easy interpretation of kssa results
+# please use function kssa_plot
 
 }
 \references{

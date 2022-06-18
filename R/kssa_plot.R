@@ -22,23 +22,22 @@
 #'
 #' @examples
 #' \donttest{
-#' # Plot the results obtained in the example from function kssa
+#' # Example 1: Plot the results from comparing all imputation methods
 #'
-#' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
-#' set.seed(1234)
 #' library("kssa")
 #' library("imputeTS")
+#'
+#' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
 #' airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
 #'
-#' # Convert co2_na to time series object
+#' # Convert to time series object
 #' airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
 #'
 #' # Apply the kssa algorithm with 5 segments,
 #' # 10 iterations, 20% of missing data, and
 #' # compare among all available methods in the package.
 #' # Remember that percentmd must match with
-#' # the real percentage of missing data in the
-#' # input co2_na_ts time series
+#' # the real percentage of missing data in the input time series
 #'
 #' results_kssa <- kssa(airgap_na_ts,
 #'   start_methods = "all",
@@ -57,6 +56,36 @@
 #' # To obtain imputations with the best method, or any method of preference
 #' # please use function get_imputations
 #' }
+#'
+#'
+#'
+#' # Example 2: Plot the results when only applying locf and linear interpolation
+#'
+#' library("kssa")
+#' library("imputeTS")
+#'
+#' # Create 20% random missing data in tsAirgapComplete time series from imputeTS
+#' airgap_na <- missMethods::delete_MCAR(as.data.frame(tsAirgapComplete), 0.2)
+#'
+#' # Convert to time series object
+#' airgap_na_ts <- ts(airgap_na, start = c(1959, 1), end = c(1997, 12), frequency = 12)
+#'
+#' # Apply the kssa algorithm with 5 segments,
+#' # 10 iterations, 20% of missing data, and compare among all
+#' # applied methods (locf and linear interpolation).
+#' # Remember that percentmd must match with
+#' # the real percentage of missing data in the input time series
+#'
+#' results_kssa <- kssa(airgap_na_ts,
+#'   start_methods = c("linear_i", "locf"),
+#'   actual_methods = c("linear_i", "locf"),
+#'   segments = 5,
+#'   iterations = 10,
+#'   percentmd = 0.2
+#' )
+#'
+#' kssa_plot(results_kssa, type = "complete", metric = "rmse")
+#'
 #'
 #' @import ggplot2
 #' @import dplyr
