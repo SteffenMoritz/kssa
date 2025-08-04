@@ -28,8 +28,8 @@ jobs:
           extra-packages: pkgdown
           needs: website
 
-       - name: Install the package
-         run: R CMD INSTALL .
+      - name: Install the package
+        run: R CMD INSTALL .
 
       - name: Deploy package
         run: |
