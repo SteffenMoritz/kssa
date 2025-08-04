@@ -27,6 +27,7 @@ jobs:
         with:
           extra-packages: pkgdown
           needs: website
+          install: true
 
       - name: Deploy package
         run: |

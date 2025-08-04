@@ -1,2 +1,4 @@
 url: https://steffenmoritz.github.io/kssa/
+template:
+  bootstrap: 5
 
