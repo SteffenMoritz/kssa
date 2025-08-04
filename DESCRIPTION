@@ -1,6 +1,6 @@
 Package: kssa
 Title: Known Sub-Sequence Algorithm
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
       c(
   person("Iván Felipe", "Benavides", email="pipeben@gmail.com", role=c("aut", "cre", "cph"), comment = c(ORCID = "0000-0002-1139-3909")),
@@ -15,7 +15,7 @@ Description: Implements the Known Sub-Sequence Algorithm <doi:10.1016/j.aaf.2021
 License: AGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+RoxygenNote: 7.3.2
 URL: https://github.com/pipeben/kssa
 BugReports: https://github.com/pipeben/kssa/issues
 Depends:
@@ -36,4 +36,4 @@ Imports:
     Metrics,
     dplyr,
     missMethods
-Date: 2022-06-18   
+Date: 2025-08-04   

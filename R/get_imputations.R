@@ -20,7 +20,7 @@
 #'    \item{"stl" - Seasonal and trend decomposition with Loess}
 #'    }
 #'
-#'    For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}
+#'    For further details on these imputation methods please check packages \code{\link[=imputeTS-package]{imputeTS}} and \code{\link[=forecast-package]{forecast}}
 #'
 #' @param seed Numeric. Any number
 #'

@@ -65,8 +65,8 @@ use function get_imputations().
 You can cite kssa the following: 
 
   > Ivan-Felipe Benavides, Steffen Moritz, Brayan-David Aroca-Gonzalez, Jhoana
-  Romero, Marlon Santacruz and John-Josephraj Selvaraj (2022). kssa: Known
-  Sub-Sequence Algorithm. R package version 0.0.1.
+  Romero, Marlon Santacruz and John-Josephraj Selvaraj (2025). kssa: Known
+  Sub-Sequence Algorithm. R package version 0.0.2.
   https://github.com/pipeben/kssa
   
 ## License
