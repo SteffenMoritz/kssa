@@ -1,33 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/404.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/index.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/reference/get_imputations.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/reference/kssa.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/reference/kssa_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://steffenmoritz.github.io/kssa/reference/pipe.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://steffenmoritz.github.io/kssa/404.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/LICENSE.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/authors.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/index.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/news/index.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/reference/get_imputations.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/reference/index.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/reference/kssa.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/reference/kssa_plot.html</loc></url>
+<url><loc>https://steffenmoritz.github.io/kssa/reference/pipe.html</loc></url>
 </urlset>
+
