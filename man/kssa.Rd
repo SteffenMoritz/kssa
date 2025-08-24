@@ -38,7 +38,7 @@ You can choose between the following:
 \item{"stl" - Seasonal and trend decomposition with Loess}
 }
 
-For further details on these imputation methods please check packages \code{\link{imputeTS}} and \code{\link{forecast}}}
+For further details on these imputation methods please check packages \CRANpkg{imputeTS} and \CRANpkg{forecast}}
 
 \item{segments}{Integer. Into how many segments the time series will be divided}
 
